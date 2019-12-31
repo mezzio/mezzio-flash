@@ -1,53 +1,54 @@
 {
-    "name": "zendframework/zend-expressive-flash",
-    "description": "Flash messages for PSR-7 applications using zend-expressive-session",
-    "type": "library",
+    "name": "mezzio/mezzio-flash",
+    "description": "Flash messages for PSR-7 applications using mezzio-session",
     "license": "BSD-3-Clause",
     "keywords": [
-        "expressive",
+        "laminas",
+        "mezzio",
         "flash",
         "middleware",
         "psr-7",
         "psr-15",
-        "session",
-        "zf",
-        "zendframework"
+        "session"
     ],
+    "homepage": "https://mezzio.dev",
     "support": {
-        "docs": "https://docs.zendframework.com/zend-expressive-flash/",
-        "issues": "https://github.com/zendframework/zend-expressive-flash/issues",
-        "source": "https://github.com/zendframework/zend-expressive-flash",
-        "slack": "https://zendframework-slack.herokuapp.com",
-        "forum": "https://discourse.zendframework.com/c/questions/expressive"
+        "docs": "https://docs.mezzio.dev/mezzio-flash/",
+        "issues": "https://github.com/mezzio/mezzio-flash/issues",
+        "source": "https://github.com/mezzio/mezzio-flash",
+        "rss": "https://github.com/mezzio/mezzio-flash/releases.atom",
+        "chat": "https://laminas.dev/chat",
+        "forum": "https://discourse.laminas.dev"
     },
     "config": {
         "sort-packages": true
-    },
-    "require": {
-        "php": "^7.1",
-        "http-interop/http-middleware": "^0.4.1",
-        "zendframework/zend-expressive-session": "^0.1"
-    },
-    "require-dev": {
-        "phpunit/phpunit": "^6.0.9",
-        "zendframework/zend-coding-standard": "~1.0.0"
-    },
-    "autoload": {
-        "psr-4": {
-            "Zend\\Expressive\\Flash\\": "src/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "ZendTest\\Expressive\\Flash\\": "test/"
-        }
     },
     "extra": {
         "branch-alias": {
             "dev-master": "1.0-dev"
         },
-        "zf": {
-            "config-provider": "Zend\\Expressive\\Flash\\ConfigProvider"
+        "laminas": {
+            "config-provider": "Mezzio\\Flash\\ConfigProvider"
+        }
+    },
+    "require": {
+        "php": "^7.1",
+        "http-interop/http-middleware": "^0.4.1",
+        "laminas/laminas-zendframework-bridge": "^1.0",
+        "mezzio/mezzio-session": "^0.1"
+    },
+    "require-dev": {
+        "laminas/laminas-coding-standard": "~1.0.0",
+        "phpunit/phpunit": "^6.0.9"
+    },
+    "autoload": {
+        "psr-4": {
+            "Mezzio\\Flash\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "MezzioTest\\Flash\\": "test/"
         }
     },
     "scripts": {
@@ -60,5 +61,8 @@
         "test": "phpunit --colors=always",
         "test-coverage": "phpunit --colors=always --coverage-clover clover.xml",
         "upload-coverage": "coveralls -v"
+    },
+    "replace": {
+        "zendframework/zend-expressive-flash": "self.version"
     }
 }
