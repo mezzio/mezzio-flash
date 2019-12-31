@@ -1,11 +1,10 @@
 docs_dir: docs/book
 site_dir: docs/html
-pages:
+nav:
     - index.md
     - Introduction: intro.md
     - "Flash Messages": messages.md
     - "Flash Message Middleware": middleware.md
-site_name: zend-expressive-flash
-site_description: 'Flash messages for PSR-7 applications using zend-expressive-session'
-repo_url: 'https://github.com/zendframework/zend-expressive-flash'
-copyright: 'Copyright (c) 2017 <a href="http://www.zend.com/">Zend Technologies USA Inc.</a>'
+site_name: mezzio-flash
+site_description: 'Flash messages for PSR-7 applications using mezzio-session'
+repo_url: 'https://github.com/mezzio/mezzio-flash'
