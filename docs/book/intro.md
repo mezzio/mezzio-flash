@@ -1,4 +1,4 @@
-# zend-expressive-flash
+# mezzio-flash
 
 _Flash messages_ are self-expiring, session-based messages. They are typically
 used when when you need to redirect after processing a request (e.g., when using
@@ -27,16 +27,16 @@ On any subsequent requests, the message is no longer available!
 To use the component, install via [Composer](https://getcomposer.org):
 
 ```bash
-$ composer require zendframework/zend-expressive-flash
+$ composer require mezzio/mezzio-flash
 ```
 
 > ### Persistence required
 >
-> zend-expressive-flash depends on zend-expressive-session, which defines
+> mezzio-flash depends on mezzio-session, which defines
 > abstractions around session containers &mdash; for use within applications for
 > accessing session data &mdash; and session persistence (how the session data
 > is persisted between requests, and reported to the client).
 >
 > Persistence requires a _persistence adapter_. We offer one basd on PHP's
-> session extension via the package zend-expressive-session-ext; others may also
+> session extension via the package mezzio-session-ext; others may also
 > be available soon.
