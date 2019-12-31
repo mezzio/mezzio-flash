@@ -1,14 +1,14 @@
 # Flash Message Middleware
 
 In order to provide flash messages to your middleware, you will first need to
-register `Zend\Expressive\Flash\FlashMessageMiddleware` in your application
+register `Mezzio\Flash\FlashMessageMiddleware` in your application
 pipeline or routed middleware pipeline; additionally, you'll need to ensure
-`Zend\Expressive\Session\SessionMiddleware` is registered prior to it.
+`Mezzio\Session\SessionMiddleware` is registered prior to it.
 
 This middleware does the following:
 
 - Pulls the session container from the request via the attribute
-  `Zend\Expressive\Session\SessionMiddleware::SESSION_ATTRIBUTE` ("session").
+  `Mezzio\Session\SessionMiddleware::SESSION_ATTRIBUTE` ("session").
 - Passes the container, along with a defined session key, to a factory for
   generating a `FlashMessagesInterface` instance.
 - Passes that instance to a request that the delegate processes, using another
@@ -18,12 +18,12 @@ This middleware does the following:
 
 By default, `FlashMessageMiddleware` uses `FlashMessages::createFromSession()`
 to generate the flash messages container, the key
-`Zend\Expressive\Flash\FlashMessagesInterface::FLASH_NEXT` (this is a literal
+`Mezzio\Flash\FlashMessagesInterface::FLASH_NEXT` (this is a literal
 string) to pull stored flash messages from the session, and the request
 attribute `FlashMessageMiddleware::FLASH_ATTRIBUTE` ("flash") to pass the flash
 messages container to the next middleware.
 
-If you are using the [zend-component-installer](https://docs.zendframework.com/zend-component-installer/)
+If you are using the [laminas-component-installer](https://docs.laminas.dev/laminas-component-installer/)
 Composer plugin, the middleware will already be wired for you. Otherwise, you
 will need to map the middleware to your dependency injection container as an
 invokable (no constructor arguments).
@@ -48,7 +48,7 @@ example, in the following, I specify:
 ```php
 use Application\FlashMessages;
 use Psr\Container\ContainerInterface;
-use Zend\Expressive\Flash\FlashMessageMiddleware;
+use Mezzio\Flash\FlashMessageMiddleware;
 
 class FlashMessageMiddlewareFactory
 {
@@ -69,7 +69,7 @@ your dependency injection configuration:
 ```php
 'dependencies' => [
     'factories' => [
-        \Zend\Expressive\Flash\FlashMessageMiddleware::class => FlashMessageMiddlewareFactory::class,
+        \Mezzio\Flash\FlashMessageMiddleware::class => FlashMessageMiddlewareFactory::class,
     ],
 ],
 ```
@@ -79,22 +79,22 @@ your dependency injection configuration:
 You may pipe this middleware either in your application pipeline
 (`config/pipeline.php`) or a routed middleware pipeline (`config/routes.php`, or
 a delegator factory). When you do, you **MUST** register it **AFTER** the
-`Zend\Expressive\Session\SessionMiddleware` as it depends on that middleware for
+`Mezzio\Session\SessionMiddleware` as it depends on that middleware for
 its session container.
 
 As an example within an application pipeline:
 
 ```php
-$app->pipe(\Zend\Expressive\Session\SessionMiddleware::class);
-$app->pipe(\Zend\Expressive\Flash\FlashMessageMiddleware::class);
+$app->pipe(\Mezzio\Session\SessionMiddleware::class);
+$app->pipe(\Mezzio\Flash\FlashMessageMiddleware::class);
 ```
 
 Within a routed middleware definition:
 
 ```php
 $app->post('/user/login', [
-    \Zend\Expressive\Session\SessionMiddleware::class,
-    \Zend\Expressive\Flash\FlashMessageMiddleware::class,
+    \Mezzio\Session\SessionMiddleware::class,
+    \Mezzio\Flash\FlashMessageMiddleware::class,
     LoginHandler::class,
 ]);
 ```

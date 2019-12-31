@@ -1,25 +1,25 @@
-# zend-expressive-flash
+# mezzio-flash
 
-[![Build Status](https://secure.travis-ci.org/zendframework/zend-expressive-flash.svg?branch=master)](https://secure.travis-ci.org/zendframework/zend-expressive-flash)
-[![Coverage Status](https://coveralls.io/repos/github/zendframework/zend-expressive-flash/badge.svg?branch=master)](https://coveralls.io/github/zendframework/zend-expressive-flash?branch=master)
+[![Build Status](https://travis-ci.org/mezzio/mezzio-flash.svg?branch=master)](https://travis-ci.org/mezzio/mezzio-flash)
+[![Coverage Status](https://coveralls.io/repos/github/mezzio/mezzio-flash/badge.svg?branch=master)](https://coveralls.io/github/mezzio/mezzio-flash?branch=master)
 
 Provides flash messages for PSR-7 middleware using
-[zend-expressive-session](https://docs.zendframework.com/zend-expressive-session/).
+[mezzio-session](https://docs.mezzio.dev/mezzio-session/).
 
 ## Installation
 
 Run the following to install this library:
 
 ```bash
-$ composer require zendframework/zend-expressive-flash
+$ composer require mezzio/mezzio-flash
 ```
 
 ## Documentation
 
-Documentation is [in the doc tree](docs/book/), and can be compiled using [mkdocs](http://www.mkdocs.org):
+Documentation is [in the doc tree](docs/book/), and can be compiled using [mkdocs](https://www.mkdocs.org):
 
 ```bash
 $ mkdocs build
 ```
 
-You may also [browse the documentation online](https://docs.zendframework.com/zend-expressive-flash/).
+You may also [browse the documentation online](https://docs.mezzio.dev/mezzio-flash/).

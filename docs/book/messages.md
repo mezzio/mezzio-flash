@@ -1,12 +1,12 @@
 # Flash Messages
 
-Flash messages are contained within a `Zend\Expressive\Flash\FlashMessagesInterface`
+Flash messages are contained within a `Mezzio\Flash\FlashMessagesInterface`
 implementation. That interface is defined as follows:
 
 ```php
-namespace Zend\Expressive\Flash;
+namespace Mezzio\Flash;
 
-use Zend\Expressive\Session\SessionInterface;
+use Mezzio\Session\SessionInterface;
 
 interface FlashMessagesInterface
 {
@@ -88,12 +88,12 @@ interface FlashMessagesInterface
 ```
 
 A default implementation is provided in the class
-`Zend\Expressive\Flash\FlashMessages`, but you may implement the interface
+`Mezzio\Flash\FlashMessages`, but you may implement the interface
 yourself if you have special needs that fall outside this standard
 implementation.
 
 The instance will generally be injected into your request under the attribute
-`Zend\Expressive\Flash\FlashMessageMiddleware::FLASH_ATTRIBUTE`, which evaluates
+`Mezzio\Flash\FlashMessageMiddleware::FLASH_ATTRIBUTE`, which evaluates
 to `flash`.
 
 ## Usage
@@ -131,7 +131,7 @@ Sometimes you may want a flash message to persist for longer than a single
 request. As an example, with a multi-page form, you may want to store messages
 until all pages have been filled.
 
-zend-expressive-flash allows you to specify _hops_, indicating how many requests
+mezzio-flash allows you to specify _hops_, indicating how many requests
 the flash message will persist for. The default value is `1`, indicating a
 single hop. This value is provided when you call `flash()` as an optional third
 argument.
