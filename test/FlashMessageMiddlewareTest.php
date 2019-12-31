@@ -1,25 +1,26 @@
 <?php
+
 /**
- * @see       https://github.com/zendframework/zend-expressive-flash for the canonical source repository
- * @copyright Copyright (c) 2017-2018 Zend Technologies USA Inc. (https://www.zend.com)
- * @license   https://github.com/zendframework/zend-expressive-flash/blob/master/LICENSE.md New BSD License
+ * @see       https://github.com/mezzio/mezzio-flash for the canonical source repository
+ * @copyright https://github.com/mezzio/mezzio-flash/blob/master/COPYRIGHT.md
+ * @license   https://github.com/mezzio/mezzio-flash/blob/master/LICENSE.md New BSD License
  */
 
 declare(strict_types=1);
 
-namespace ZendTest\Expressive\Flash;
+namespace MezzioTest\Flash;
 
+use Mezzio\Flash\Exception;
+use Mezzio\Flash\FlashMessageMiddleware;
+use Mezzio\Flash\FlashMessagesInterface;
+use Mezzio\Session\SessionInterface;
+use Mezzio\Session\SessionMiddleware;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use stdClass;
-use Zend\Expressive\Flash\Exception;
-use Zend\Expressive\Flash\FlashMessageMiddleware;
-use Zend\Expressive\Flash\FlashMessagesInterface;
-use Zend\Expressive\Session\SessionInterface;
-use Zend\Expressive\Session\SessionMiddleware;
 
 class FlashMessageMiddlewareTest extends TestCase
 {
