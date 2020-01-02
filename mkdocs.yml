@@ -8,3 +8,6 @@ nav:
 site_name: mezzio-flash
 site_description: 'Flash messages for PSR-7 applications using mezzio-session'
 repo_url: 'https://github.com/mezzio/mezzio-flash'
+extra:
+    project: Mezzio
+    project_url: 'https://docs.mezzio.dev'
