@@ -1,6 +1,6 @@
 # mezzio-flash
 
-[![Build Status](https://travis-ci.org/mezzio/mezzio-flash.svg?branch=master)](https://travis-ci.org/mezzio/mezzio-flash)
+[![Build Status](https://travis-ci.com/mezzio/mezzio-flash.svg?branch=master)](https://travis-ci.com/mezzio/mezzio-flash)
 [![Coverage Status](https://coveralls.io/repos/github/mezzio/mezzio-flash/badge.svg?branch=master)](https://coveralls.io/github/mezzio/mezzio-flash?branch=master)
 
 Provides flash messages for PSR-7 middleware using

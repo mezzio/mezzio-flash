@@ -1,7 +1,7 @@
 docs_dir: docs/book
 site_dir: docs/html
 nav:
-    - index.md
+    - Home: index.md
     - Introduction: intro.md
     - "Flash Messages": messages.md
     - "Flash Message Middleware": middleware.md
@@ -10,4 +10,3 @@ site_description: 'Flash messages for PSR-7 applications using mezzio-session'
 repo_url: 'https://github.com/mezzio/mezzio-flash'
 extra:
     project: Mezzio
-    project_url: 'https://docs.mezzio.dev'
