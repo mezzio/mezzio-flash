@@ -66,6 +66,6 @@
         "test-coverage": "phpunit --colors=always --coverage-clover clover.xml"
     },
     "replace": {
-        "zendframework/zend-expressive-flash": "self.version"
+        "zendframework/zend-expressive-flash": "^1.0.1"
     }
 }
