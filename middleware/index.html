@@ -317,7 +317,7 @@ example, in the following, I specify:</p>
 <li>The request attribute <code>flash-messages</code> in which to store the flash messages
   container.</li>
 </ul>
-<pre class=codehilite><code class=language-php>use Application\FlashMessages;
+<pre class="highlight"><code class="language-php">use Application\FlashMessages;
 use Psr\Container\ContainerInterface;
 use Mezzio\Flash\FlashMessageMiddleware;
 
@@ -332,13 +332,15 @@ class FlashMessageMiddlewareFactory
         );
     }
 }</code></pre>
+
 <p>Once you have created this factory, map the <code>FlashMessageMiddleware</code> to it in
 your dependency injection configuration:</p>
-<pre class=codehilite><code class=language-php>'dependencies' =&gt; [
+<pre class="highlight"><code class="language-php">'dependencies' =&gt; [
     'factories' =&gt; [
         \Mezzio\Flash\FlashMessageMiddleware::class =&gt; FlashMessageMiddlewareFactory::class,
     ],
 ],</code></pre>
+
 <h2 id="piping-the-middleware">Piping the middleware</h2>
 <p>You may pipe this middleware either in your application pipeline
 (<code>config/pipeline.php</code>) or a routed middleware pipeline (<code>config/routes.php</code>, or
@@ -346,10 +348,11 @@ a delegator factory). When you do, you <strong>MUST</strong> register it <strong
 <code>Mezzio\Session\SessionMiddleware</code> as it depends on that middleware for
 its session container.</p>
 <p>As an example within an application pipeline:</p>
-<pre class=codehilite><code class=language-php>$app-&gt;pipe(\Mezzio\Session\SessionMiddleware::class);
+<pre class="highlight"><code class="language-php">$app-&gt;pipe(\Mezzio\Session\SessionMiddleware::class);
 $app-&gt;pipe(\Mezzio\Flash\FlashMessageMiddleware::class);</code></pre>
+
 <p>Within a routed middleware definition:</p>
-<pre class=codehilite><code class=language-php>$app-&gt;post('/user/login', [
+<pre class="highlight"><code class="language-php">$app-&gt;post('/user/login', [
     \Mezzio\Session\SessionMiddleware::class,
     \Mezzio\Flash\FlashMessageMiddleware::class,
     LoginHandler::class,
