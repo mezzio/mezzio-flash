@@ -12,18 +12,18 @@ namespace Mezzio\Flash;
 
 class ConfigProvider
 {
-    public function __invoke() : array
+    public function __invoke(): array
     {
         return [
             'dependencies' => $this->getDependencies(),
         ];
     }
 
-    public function getDependencies() : array
+    public function getDependencies(): array
     {
         return [
             // Legacy Zend Framework aliases
-            'aliases' => [
+            'aliases'    => [
                 \Zend\Expressive\Flash\FlashMessageMiddleware::class => FlashMessageMiddleware::class,
             ],
             'invokables' => [

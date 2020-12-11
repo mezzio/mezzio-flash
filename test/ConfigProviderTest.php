@@ -23,7 +23,7 @@ class ConfigProviderTest extends TestCase
         $this->provider = new ConfigProvider();
     }
 
-    public function testInvocationReturnsArray()
+    public function testInvocationReturnsArray(): array
     {
         $config = ($this->provider)();
         $this->assertIsArray($config);

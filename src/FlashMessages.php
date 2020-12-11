@@ -35,24 +35,18 @@ use function is_array;
  */
 class FlashMessages implements FlashMessagesInterface
 {
-    /**
-     * @var array
-     */
+    /** @var array */
     private $currentMessages = [];
 
-    /**
-     * @var SessionInterface
-     */
+    /** @var SessionInterface */
     private $session;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $sessionKey;
 
     private function __construct(SessionInterface $session, string $sessionKey)
     {
-        $this->session = $session;
+        $this->session    = $session;
         $this->sessionKey = $sessionKey;
         $this->prepareMessages($session, $sessionKey);
     }
@@ -63,7 +57,7 @@ class FlashMessages implements FlashMessagesInterface
     public static function createFromSession(
         SessionInterface $session,
         string $sessionKey = FlashMessagesInterface::FLASH_NEXT
-    ) : FlashMessagesInterface {
+    ): FlashMessagesInterface {
         return new self($session, $sessionKey);
     }
 
@@ -77,13 +71,13 @@ class FlashMessages implements FlashMessagesInterface
      * @param mixed $value
      * @throws Exception\InvalidHopsValueException
      */
-    public function flash(string $key, $value, int $hops = 1) : void
+    public function flash(string $key, $value, int $hops = 1): void
     {
         if ($hops < 1) {
             throw Exception\InvalidHopsValueException::valueTooLow($key, $hops);
         }
 
-        $messages = $this->session->get($this->sessionKey, []);
+        $messages       = $this->session->get($this->sessionKey, []);
         $messages[$key] = [
             'value' => $value,
             'hops'  => $hops,
@@ -100,7 +94,7 @@ class FlashMessages implements FlashMessagesInterface
      *
      * @param mixed $value
      */
-    public function flashNow(string $key, $value, int $hops = 1) : void
+    public function flashNow(string $key, $value, int $hops = 1): void
     {
         $this->currentMessages[$key] = $value;
         $this->flash($key, $value, $hops);
@@ -132,7 +126,7 @@ class FlashMessages implements FlashMessagesInterface
      *
      * @return array
      */
-    public function getFlashes() : array
+    public function getFlashes(): array
     {
         return $this->currentMessages;
     }
@@ -142,7 +136,7 @@ class FlashMessages implements FlashMessagesInterface
      *
      * Affects the next and subsequent requests.
      */
-    public function clearFlash() : void
+    public function clearFlash(): void
     {
         $this->session->unset($this->sessionKey);
     }
@@ -150,7 +144,7 @@ class FlashMessages implements FlashMessagesInterface
     /**
      * Prolongs any current flash messages for one more hop.
      */
-    public function prolongFlash() : void
+    public function prolongFlash(): void
     {
         $messages = $this->session->get($this->sessionKey, []);
         foreach ($this->currentMessages as $key => $value) {
@@ -162,7 +156,7 @@ class FlashMessages implements FlashMessagesInterface
         }
     }
 
-    public function prepareMessages(SessionInterface $session, string $sessionKey) : void
+    public function prepareMessages(SessionInterface $session, string $sessionKey): void
     {
         if (! $session->has($sessionKey)) {
             return;
@@ -180,7 +174,7 @@ class FlashMessages implements FlashMessagesInterface
                 continue;
             }
 
-            $data['hops'] -= 1;
+            $data['hops']         -= 1;
             $sessionMessages[$key] = $data;
         }
 

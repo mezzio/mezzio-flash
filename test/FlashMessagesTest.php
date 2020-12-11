@@ -46,7 +46,7 @@ class FlashMessagesTest extends TestCase
     public function testCreationAggregatesItemsMarkedNextAndRemovesThemFromSession()
     {
         $messages = [
-            'test' => [
+            'test'   => [
                 'hops'  => 1,
                 'value' => 'value1',
             ],
@@ -81,8 +81,8 @@ class FlashMessagesTest extends TestCase
 
     public function testCreationAggregatesPersistsItemsWithMultipleHopsInSessionWithDecrementedHops()
     {
-        $messages = [
-            'test' => [
+        $messages                           = [
+            'test'   => [
                 'hops'  => 3,
                 'value' => 'value1',
             ],
@@ -91,8 +91,8 @@ class FlashMessagesTest extends TestCase
                 'value' => 'value2',
             ],
         ];
-        $messagesExpected = $messages;
-        $messagesExpected['test']['hops'] = 2;
+        $messagesExpected                   = $messages;
+        $messagesExpected['test']['hops']   = 2;
         $messagesExpected['test-2']['hops'] = 1;
 
         $this->session
@@ -188,7 +188,7 @@ class FlashMessagesTest extends TestCase
     public function testProlongFlashAddsCurrentMessagesToNextSession()
     {
         $messages = [
-            'test' => [
+            'test'   => [
                 'hops'  => 1,
                 'value' => 'value1',
             ],
@@ -225,7 +225,7 @@ class FlashMessagesTest extends TestCase
                             'value' => 'value1',
                             'hops'  => 1,
                         ],
-                    ]
+                    ],
                 ],
                 [
                     FlashMessagesInterface::FLASH_NEXT,
@@ -234,7 +234,7 @@ class FlashMessagesTest extends TestCase
                             'value' => 'value2',
                             'hops'  => 1,
                         ],
-                    ]
+                    ],
                 ]
             );
 
@@ -250,8 +250,8 @@ class FlashMessagesTest extends TestCase
 
     public function testProlongFlashDoesNotReFlashMessagesThatAlreadyHaveMoreHops()
     {
-        $messages = [
-            'test' => [
+        $messages                           = [
+            'test'   => [
                 'hops'  => 3,
                 'value' => 'value1',
             ],
@@ -260,8 +260,8 @@ class FlashMessagesTest extends TestCase
                 'value' => 'value2',
             ],
         ];
-        $messagesExpected = $messages;
-        $messagesExpected['test']['hops'] = 2;
+        $messagesExpected                   = $messages;
+        $messagesExpected['test']['hops']   = 2;
         $messagesExpected['test-2']['hops'] = 1;
 
         $this->session
@@ -297,8 +297,8 @@ class FlashMessagesTest extends TestCase
 
     public function testClearFlashShouldRemoveAnyUnexpiredMessages()
     {
-        $messages = [
-            'test' => [
+        $messages                           = [
+            'test'   => [
                 'hops'  => 3,
                 'value' => 'value1',
             ],
@@ -307,8 +307,8 @@ class FlashMessagesTest extends TestCase
                 'value' => 'value2',
             ],
         ];
-        $messagesExpected = $messages;
-        $messagesExpected['test']['hops'] = 2;
+        $messagesExpected                   = $messages;
+        $messagesExpected['test']['hops']   = 2;
         $messagesExpected['test-2']['hops'] = 1;
 
         $this->session

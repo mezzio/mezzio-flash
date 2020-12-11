@@ -18,7 +18,7 @@ use function sprintf;
 
 class MissingSessionException extends RuntimeException implements ExceptionInterface
 {
-    public static function forMiddleware(MiddlewareInterface $middleware)
+    public static function forMiddleware(MiddlewareInterface $middleware): MissingSessionException
     {
         return new self(sprintf(
             'Unable to create flash messages in %s; missing session attribute',
