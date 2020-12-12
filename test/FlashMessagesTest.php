@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace MezzioTest\Flash;
 
+use Mezzio\Flash\Exception\InvalidHopsValueException;
 use Mezzio\Flash\FlashMessages;
 use Mezzio\Flash\FlashMessagesInterface;
 use Mezzio\Session\SessionInterface;
@@ -340,5 +341,31 @@ class FlashMessagesTest extends TestCase
         $this->assertSame('value2', $flash->getFlash('test-2'));
         $this->assertSame(['test' => 'value1', 'test-2' => 'value2'], $flash->getFlashes());
         $flash->clearFlash();
+    }
+
+    public function testCreationAggregatesThrowsExceptionIfInvalidNumberOfHops()
+    {
+        $this->expectException(InvalidHopsValueException::class);
+
+        $this->session
+            ->expects($this->once())
+            ->method('has')
+            ->with(FlashMessagesInterface::FLASH_NEXT)
+            ->willReturn(false);
+        $this->session
+            ->expects($this->never())
+            ->method('get')
+            ->with(FlashMessagesInterface::FLASH_NEXT, [])
+            ->willReturn([]);
+        $this->session
+            ->expects($this->never())
+            ->method('set')
+            ->with(
+                $this->anything(),
+                $this->anything()
+            );
+
+        $flash = FlashMessages::createFromSession($this->session);
+        $flash->flashNow('test', 'value', 0);
     }
 }
