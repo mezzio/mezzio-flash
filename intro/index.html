@@ -202,7 +202,7 @@
             </div>
 
             
-            <div class="col-4 text-sm-right">
+            <div class="col-4 text-right">
                 
                     
 
@@ -278,15 +278,12 @@ but want to display a message back to the user indicating a processing result.</
 successfully completing a form. I can do that with flash messages.</p>
 <p>When processing, I would create the message in my middleware:</p>
 <pre class="highlight"><code class="language-php">$flashMessages-&gt;flash('form-complete', 'Thank you; your submission was recorded.');</code></pre>
-
 <p>On the subsequent request, my middleware would pull that message:</p>
 <pre class="highlight"><code class="language-php">$message = $flashMessages-&gt;getFlash('form-complete');</code></pre>
-
 <p>On any subsequent requests, the message is no longer available!</p>
 <h2 id="installation">Installation</h2>
 <p>To use the component, install via <a href="https://getcomposer.org">Composer</a>:</p>
 <pre class="highlight"><code class="language-bash">$ composer require mezzio/mezzio-flash</code></pre>
-
 <blockquote>
 <h3>Persistence required</h3>
 <p>mezzio-flash depends on mezzio-session, which defines

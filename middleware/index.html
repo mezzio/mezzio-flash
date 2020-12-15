@@ -202,7 +202,7 @@
             </div>
 
             
-            <div class="col-4 text-sm-right">
+            <div class="col-4 text-right">
                 
                     
 
@@ -332,7 +332,6 @@ class FlashMessageMiddlewareFactory
         );
     }
 }</code></pre>
-
 <p>Once you have created this factory, map the <code>FlashMessageMiddleware</code> to it in
 your dependency injection configuration:</p>
 <pre class="highlight"><code class="language-php">'dependencies' =&gt; [
@@ -340,7 +339,6 @@ your dependency injection configuration:</p>
         \Mezzio\Flash\FlashMessageMiddleware::class =&gt; FlashMessageMiddlewareFactory::class,
     ],
 ],</code></pre>
-
 <h2 id="piping-the-middleware">Piping the middleware</h2>
 <p>You may pipe this middleware either in your application pipeline
 (<code>config/pipeline.php</code>) or a routed middleware pipeline (<code>config/routes.php</code>, or
@@ -350,7 +348,6 @@ its session container.</p>
 <p>As an example within an application pipeline:</p>
 <pre class="highlight"><code class="language-php">$app-&gt;pipe(\Mezzio\Session\SessionMiddleware::class);
 $app-&gt;pipe(\Mezzio\Flash\FlashMessageMiddleware::class);</code></pre>
-
 <p>Within a routed middleware definition:</p>
 <pre class="highlight"><code class="language-php">$app-&gt;post('/user/login', [
     \Mezzio\Session\SessionMiddleware::class,

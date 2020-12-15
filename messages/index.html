@@ -202,7 +202,7 @@
             </div>
 
             
-            <div class="col-4 text-sm-right">
+            <div class="col-4 text-right">
                 
                     
 
@@ -361,7 +361,6 @@ interface FlashMessagesInterface
      */
     public function prolongFlash() : void;
 }</code></pre>
-
 <p>A default implementation is provided in the class
 <code>Mezzio\Flash\FlashMessages</code>, but you may implement the interface
 yourself if you have special needs that fall outside this standard
@@ -375,16 +374,12 @@ to <code>flash</code>.</p>
 
 // or
 $flashMessages = $request-&gt;getAttribute('flash');</code></pre>
-
 <p>To create a flash message for the next request:</p>
 <pre class="highlight"><code class="language-php">$flashMessages-&gt;flash($messageName, $messageValue);</code></pre>
-
 <p>To retrieve a message you previously flashed:</p>
 <pre class="highlight"><code class="language-php">$message = $flashMessages-&gt;getFlash($messageName);</code></pre>
-
 <p>To retrieve all messages you previously flashed:</p>
 <pre class="highlight"><code class="language-php">$messages = $flashMessages-&gt;getFlashes();</code></pre>
-
 <h2 id="hops">Hops</h2>
 <p>Sometimes you may want a flash message to persist for longer than a single
 request. As an example, with a multi-page form, you may want to store messages
@@ -395,14 +390,11 @@ single hop. This value is provided when you call <code>flash()</code> as an opti
 argument.</p>
 <p>To have a message persist for three "hops", you might call <code>flash()</code> as follows:</p>
 <pre class="highlight"><code class="language-php">$flashMessages-&gt;flash($messageName, $messageValue, 3);</code></pre>
-
 <p>Sometimes you may want to ensure all messages persist for one more hop. To do
 that:</p>
 <pre class="highlight"><code class="language-php">$flashMessages-&gt;prolongFlash();</code></pre>
-
 <p>If you want to clear all flash methods, no matter the number of hops:</p>
 <pre class="highlight"><code class="language-php">$flashMessages-&gt;clearFlash();</code></pre>
-
 <p>Note, however, that this clears them for the <em>next request</em>, not the current
 one.</p>
 <h2 id="accessing-messages-in-the-current-request">Accessing messages in the current request</h2>
@@ -410,7 +402,6 @@ one.</p>
 the <em>current request</em>. If you want access to it in the current request as well,
 use the <code>flashNow()</code> method instead of <code>flash()</code>:</p>
 <pre class="highlight"><code class="language-php">$flashMessages-&gt;flashNow($messageName, $messageValue);</code></pre>
-
 <p>The signature of this method is the same as for <code>flash()</code>, and allows you to
 optionally provide a <code>$hops</code> value as well.</p>
 
