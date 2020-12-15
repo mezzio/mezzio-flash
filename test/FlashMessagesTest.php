@@ -10,32 +10,44 @@ declare(strict_types=1);
 
 namespace MezzioTest\Flash;
 
+use Mezzio\Flash\Exception\InvalidHopsValueException;
 use Mezzio\Flash\FlashMessages;
 use Mezzio\Flash\FlashMessagesInterface;
 use Mezzio\Session\SessionInterface;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class FlashMessagesTest extends TestCase
 {
-    public function setUp()
+    /** @var SessionInterface|MockObject */
+    private $session;
+
+    public function setUp(): void
     {
-        $this->session = $this->prophesize(SessionInterface::class);
+        $this->session = $this->createMock(SessionInterface::class);
     }
 
     public function testCreationAggregatesNothingIfNoMessagesExistUnderSpecifiedSessionKey()
     {
-        $this->session->has(FlashMessagesInterface::FLASH_NEXT)->willReturn(false);
-        $this->session->get(FlashMessagesInterface::FLASH_NEXT)->shouldNotBeCalled();
+        $this->session
+            ->expects($this->once())
+            ->method('has')
+            ->with(FlashMessagesInterface::FLASH_NEXT)
+            ->willReturn(false);
+        $this->session
+            ->expects($this->never())
+            ->method('get')
+            ->with(FlashMessagesInterface::FLASH_NEXT);
 
-        $flash = FlashMessages::createFromSession($this->session->reveal());
+        $flash = FlashMessages::createFromSession($this->session);
         $this->assertInstanceOf(FlashMessages::class, $flash);
-        $this->assertAttributeSame([], 'currentMessages', $flash);
+        $this->assertSame([], $flash->getFlashes());
     }
 
     public function testCreationAggregatesItemsMarkedNextAndRemovesThemFromSession()
     {
         $messages = [
-            'test' => [
+            'test'   => [
                 'hops'  => 1,
                 'value' => 'value1',
             ],
@@ -45,11 +57,22 @@ class FlashMessagesTest extends TestCase
             ],
         ];
 
-        $this->session->has(FlashMessagesInterface::FLASH_NEXT)->willReturn(true);
-        $this->session->get(FlashMessagesInterface::FLASH_NEXT)->willReturn($messages);
-        $this->session->unset(FlashMessagesInterface::FLASH_NEXT)->shouldBeCalled();
+        $this->session
+            ->expects($this->once())
+            ->method('has')
+            ->with(FlashMessagesInterface::FLASH_NEXT)
+            ->willReturn(true);
+        $this->session
+            ->expects($this->once())
+            ->method('get')
+            ->with(FlashMessagesInterface::FLASH_NEXT)
+            ->willReturn($messages);
+        $this->session
+            ->expects($this->once())
+            ->method('unset')
+            ->with(FlashMessagesInterface::FLASH_NEXT);
 
-        $flash = FlashMessages::createFromSession($this->session->reveal());
+        $flash = FlashMessages::createFromSession($this->session);
         $this->assertInstanceOf(FlashMessages::class, $flash);
 
         $this->assertSame('value1', $flash->getFlash('test'));
@@ -59,8 +82,8 @@ class FlashMessagesTest extends TestCase
 
     public function testCreationAggregatesPersistsItemsWithMultipleHopsInSessionWithDecrementedHops()
     {
-        $messages = [
-            'test' => [
+        $messages                           = [
+            'test'   => [
                 'hops'  => 3,
                 'value' => 'value1',
             ],
@@ -69,20 +92,29 @@ class FlashMessagesTest extends TestCase
                 'value' => 'value2',
             ],
         ];
-        $messagesExpected = $messages;
-        $messagesExpected['test']['hops'] = 2;
+        $messagesExpected                   = $messages;
+        $messagesExpected['test']['hops']   = 2;
         $messagesExpected['test-2']['hops'] = 1;
 
-        $this->session->has(FlashMessagesInterface::FLASH_NEXT)->willReturn(true);
-        $this->session->get(FlashMessagesInterface::FLASH_NEXT)->willReturn($messages);
         $this->session
-            ->set(
+            ->expects($this->once())
+            ->method('has')
+            ->with(FlashMessagesInterface::FLASH_NEXT)
+            ->willReturn(true);
+        $this->session
+            ->expects($this->once())
+            ->method('get')
+            ->with(FlashMessagesInterface::FLASH_NEXT)
+            ->willReturn($messages);
+        $this->session
+            ->expects($this->once())
+            ->method('set')
+            ->with(
                 FlashMessagesInterface::FLASH_NEXT,
                 $messagesExpected
-            )
-            ->shouldBeCalled();
+            );
 
-        $flash = FlashMessages::createFromSession($this->session->reveal());
+        $flash = FlashMessages::createFromSession($this->session);
         $this->assertInstanceOf(FlashMessages::class, $flash);
 
         $this->assertSame('value1', $flash->getFlash('test'));
@@ -92,11 +124,20 @@ class FlashMessagesTest extends TestCase
 
     public function testFlashingAValueMakesItAvailableInNextSessionButNotFlashMessages()
     {
-        $this->session->has(FlashMessagesInterface::FLASH_NEXT)->willReturn(false);
-        $this->session->get(FlashMessagesInterface::FLASH_NEXT)->shouldNotBeCalled();
-        $this->session->get(FlashMessagesInterface::FLASH_NEXT, [])->willReturn([]);
         $this->session
-            ->set(
+            ->expects($this->once())
+            ->method('has')
+            ->with(FlashMessagesInterface::FLASH_NEXT)
+            ->willReturn(false);
+        $this->session
+            ->expects($this->once())
+            ->method('get')
+            ->with(FlashMessagesInterface::FLASH_NEXT, [])
+            ->willReturn([]);
+        $this->session
+            ->expects($this->once())
+            ->method('set')
+            ->with(
                 FlashMessagesInterface::FLASH_NEXT,
                 [
                     'test' => [
@@ -104,10 +145,9 @@ class FlashMessagesTest extends TestCase
                         'hops'  => 1,
                     ],
                 ]
-            )
-            ->shouldBeCalled();
+            );
 
-        $flash = FlashMessages::createFromSession($this->session->reveal());
+        $flash = FlashMessages::createFromSession($this->session);
         $flash->flash('test', 'value');
 
         $this->assertNull($flash->getFlash('test'));
@@ -116,11 +156,20 @@ class FlashMessagesTest extends TestCase
 
     public function testFlashNowMakesValueAvailableBothInNextSessionAndCurrentFlashMessages()
     {
-        $this->session->has(FlashMessagesInterface::FLASH_NEXT)->willReturn(false);
-        $this->session->get(FlashMessagesInterface::FLASH_NEXT)->shouldNotBeCalled();
-        $this->session->get(FlashMessagesInterface::FLASH_NEXT, [])->willReturn([]);
         $this->session
-            ->set(
+            ->expects($this->once())
+            ->method('has')
+            ->with(FlashMessagesInterface::FLASH_NEXT)
+            ->willReturn(false);
+        $this->session
+            ->expects($this->once())
+            ->method('get')
+            ->with(FlashMessagesInterface::FLASH_NEXT, [])
+            ->willReturn([]);
+        $this->session
+            ->expects($this->once())
+            ->method('set')
+            ->with(
                 FlashMessagesInterface::FLASH_NEXT,
                 [
                     'test' => [
@@ -128,10 +177,9 @@ class FlashMessagesTest extends TestCase
                         'hops'  => 1,
                     ],
                 ]
-            )
-            ->shouldBeCalled();
+            );
 
-        $flash = FlashMessages::createFromSession($this->session->reveal());
+        $flash = FlashMessages::createFromSession($this->session);
         $flash->flashNow('test', 'value');
 
         $this->assertSame('value', $flash->getFlash('test'));
@@ -141,7 +189,7 @@ class FlashMessagesTest extends TestCase
     public function testProlongFlashAddsCurrentMessagesToNextSession()
     {
         $messages = [
-            'test' => [
+            'test'   => [
                 'hops'  => 1,
                 'value' => 'value1',
             ],
@@ -151,36 +199,47 @@ class FlashMessagesTest extends TestCase
             ],
         ];
 
-        $this->session->has(FlashMessagesInterface::FLASH_NEXT)->willReturn(true);
-        $this->session->get(FlashMessagesInterface::FLASH_NEXT)->willReturn($messages);
-        $this->session->unset(FlashMessagesInterface::FLASH_NEXT)->shouldBeCalled();
-
-        $this->session->get(FlashMessagesInterface::FLASH_NEXT, [])->willReturn([]);
+        $this->session
+            ->expects($this->once())
+            ->method('has')
+            ->with(FlashMessagesInterface::FLASH_NEXT)
+            ->willReturn(true);
+        $this->session
+            ->method('get')
+            ->withConsecutive(
+                [FlashMessagesInterface::FLASH_NEXT],
+                [FlashMessagesInterface::FLASH_NEXT, []]
+            )
+            ->willReturnOnConsecutiveCalls($messages, []);
+        $this->session
+            ->expects($this->once())
+            ->method('unset')
+            ->with(FlashMessagesInterface::FLASH_NEXT);
 
         $this->session
-            ->set(
-                FlashMessagesInterface::FLASH_NEXT,
+            ->method('set')
+            ->withConsecutive(
                 [
-                    'test' => [
-                        'value' => 'value1',
-                        'hops'  => 1,
+                    FlashMessagesInterface::FLASH_NEXT,
+                    [
+                        'test' => [
+                            'value' => 'value1',
+                            'hops'  => 1,
+                        ],
+                    ],
+                ],
+                [
+                    FlashMessagesInterface::FLASH_NEXT,
+                    [
+                        'test-2' => [
+                            'value' => 'value2',
+                            'hops'  => 1,
+                        ],
                     ],
                 ]
-            )
-            ->shouldBeCalled();
-        $this->session
-            ->set(
-                FlashMessagesInterface::FLASH_NEXT,
-                [
-                    'test-2' => [
-                        'value' => 'value2',
-                        'hops'  => 1,
-                    ],
-                ]
-            )
-            ->shouldBeCalled();
+            );
 
-        $flash = FlashMessages::createFromSession($this->session->reveal());
+        $flash = FlashMessages::createFromSession($this->session);
         $this->assertInstanceOf(FlashMessages::class, $flash);
 
         $this->assertSame('value1', $flash->getFlash('test'));
@@ -192,8 +251,8 @@ class FlashMessagesTest extends TestCase
 
     public function testProlongFlashDoesNotReFlashMessagesThatAlreadyHaveMoreHops()
     {
-        $messages = [
-            'test' => [
+        $messages                           = [
+            'test'   => [
                 'hops'  => 3,
                 'value' => 'value1',
             ],
@@ -202,25 +261,32 @@ class FlashMessagesTest extends TestCase
                 'value' => 'value2',
             ],
         ];
-        $messagesExpected = $messages;
-        $messagesExpected['test']['hops'] = 2;
+        $messagesExpected                   = $messages;
+        $messagesExpected['test']['hops']   = 2;
         $messagesExpected['test-2']['hops'] = 1;
 
-        $this->session->has(FlashMessagesInterface::FLASH_NEXT)->willReturn(true);
-        $this->session->get(FlashMessagesInterface::FLASH_NEXT)->willReturn($messages);
         $this->session
-            ->set(
+            ->expects($this->once())
+            ->method('has')
+            ->with(FlashMessagesInterface::FLASH_NEXT)
+            ->willReturn(true);
+        $this->session
+            ->expects($this->atMost(2))
+            ->method('get')
+            ->withConsecutive(
+                [FlashMessagesInterface::FLASH_NEXT],
+                [FlashMessagesInterface::FLASH_NEXT, []]
+            )
+            ->willReturnOnConsecutiveCalls($messages, $messagesExpected);
+        $this->session
+            ->expects($this->once())
+            ->method('set')
+            ->with(
                 FlashMessagesInterface::FLASH_NEXT,
                 $messagesExpected
-            )
-            ->shouldBeCalledTimes(1);
+            );
 
-        $this->session
-            ->get(FlashMessagesInterface::FLASH_NEXT, [])
-            ->willReturn($messagesExpected)
-            ->shouldBeCalledTimes(1);
-
-        $flash = FlashMessages::createFromSession($this->session->reveal());
+        $flash = FlashMessages::createFromSession($this->session);
         $this->assertInstanceOf(FlashMessages::class, $flash);
 
         $this->assertSame('value1', $flash->getFlash('test'));
@@ -232,8 +298,8 @@ class FlashMessagesTest extends TestCase
 
     public function testClearFlashShouldRemoveAnyUnexpiredMessages()
     {
-        $messages = [
-            'test' => [
+        $messages                           = [
+            'test'   => [
                 'hops'  => 3,
                 'value' => 'value1',
             ],
@@ -242,26 +308,64 @@ class FlashMessagesTest extends TestCase
                 'value' => 'value2',
             ],
         ];
-        $messagesExpected = $messages;
-        $messagesExpected['test']['hops'] = 2;
+        $messagesExpected                   = $messages;
+        $messagesExpected['test']['hops']   = 2;
         $messagesExpected['test-2']['hops'] = 1;
 
-        $this->session->has(FlashMessagesInterface::FLASH_NEXT)->willReturn(true);
-        $this->session->get(FlashMessagesInterface::FLASH_NEXT)->willReturn($messages);
         $this->session
-            ->set(
+            ->expects($this->once())
+            ->method('has')
+            ->with(FlashMessagesInterface::FLASH_NEXT)
+            ->willReturn(true);
+        $this->session
+            ->expects($this->once())
+            ->method('get')
+            ->with(FlashMessagesInterface::FLASH_NEXT)
+            ->willReturn($messages);
+        $this->session
+            ->expects($this->once())
+            ->method('set')
+            ->with(
                 FlashMessagesInterface::FLASH_NEXT,
                 $messagesExpected
-            )
-            ->shouldBeCalled();
-        $this->session->unset(FlashMessagesInterface::FLASH_NEXT)->shouldBeCalled();
+            );
+        $this->session
+            ->expects($this->once())
+            ->method('unset')
+            ->with(FlashMessagesInterface::FLASH_NEXT);
 
-        $flash = FlashMessages::createFromSession($this->session->reveal());
+        $flash = FlashMessages::createFromSession($this->session);
         $this->assertInstanceOf(FlashMessages::class, $flash);
 
         $this->assertSame('value1', $flash->getFlash('test'));
         $this->assertSame('value2', $flash->getFlash('test-2'));
         $this->assertSame(['test' => 'value1', 'test-2' => 'value2'], $flash->getFlashes());
         $flash->clearFlash();
+    }
+
+    public function testCreationAggregatesThrowsExceptionIfInvalidNumberOfHops()
+    {
+        $this->expectException(InvalidHopsValueException::class);
+
+        $this->session
+            ->expects($this->once())
+            ->method('has')
+            ->with(FlashMessagesInterface::FLASH_NEXT)
+            ->willReturn(false);
+        $this->session
+            ->expects($this->never())
+            ->method('get')
+            ->with(FlashMessagesInterface::FLASH_NEXT, [])
+            ->willReturn([]);
+        $this->session
+            ->expects($this->never())
+            ->method('set')
+            ->with(
+                $this->anything(),
+                $this->anything()
+            );
+
+        $flash = FlashMessages::createFromSession($this->session);
+        $flash->flashNow('test', 'value', 0);
     }
 }

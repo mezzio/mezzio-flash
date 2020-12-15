@@ -15,44 +15,56 @@ use Mezzio\Session\SessionInterface;
 
 class FlashMessages implements FlashMessagesInterface
 {
+    /** @var SessionInterface */
     public $session;
+    /** @var string */
     public $sessionKey;
 
     public function __construct(SessionInterface $session, string $sessionKey)
     {
-        $this->session = $session;
+        $this->session    = $session;
         $this->sessionKey = $sessionKey;
     }
 
     public static function createFromSession(
         SessionInterface $session,
         string $sessionKey = 'this-should-not-be-used'
-    ) : FlashMessagesInterface {
+    ): FlashMessagesInterface {
         return new self($session, $sessionKey);
     }
 
-    public function flash(string $key, $value, int $hops = 1) : void
+    /**
+     * @param mixed $value
+     */
+    public function flash(string $key, $value, int $hops = 1): void
     {
     }
 
-    public function flashNow(string $key, $value, int $hops = 1) : void
+    /**
+     * @param mixed $value
+     */
+    public function flashNow(string $key, $value, int $hops = 1): void
     {
     }
 
+    /**
+     * @param null $default
+     * @return mixed|void
+     */
     public function getFlash(string $key, $default = null)
     {
     }
 
-    public function getFlashes() : array
+    public function getFlashes(): array
     {
         return [];
     }
 
-    public function clearFlash() : void
+    public function clearFlash(): void
     {
     }
 
-    public function prolongFlash() : void
+    public function prolongFlash(): void
     {
     }
 }

@@ -28,7 +28,7 @@ interface FlashMessagesInterface
     public static function createFromSession(
         SessionInterface $session,
         string $sessionKey = self::FLASH_NEXT
-    ) : FlashMessagesInterface;
+    ): FlashMessagesInterface;
 
     /**
      * Set a flash value with the given key.
@@ -39,7 +39,7 @@ interface FlashMessagesInterface
      *
      * @param mixed $value
      */
-    public function flash(string $key, $value, int $hops = 1) : void;
+    public function flash(string $key, $value, int $hops = 1): void;
 
     /**
      * Set a flash value with the given key, but allow access during this request.
@@ -50,7 +50,7 @@ interface FlashMessagesInterface
      *
      * @param mixed $value
      */
-    public function flashNow(string $key, $value, int $hops = 1) : void;
+    public function flashNow(string $key, $value, int $hops = 1): void;
 
     /**
      * Retrieve a flash value.
@@ -75,17 +75,17 @@ interface FlashMessagesInterface
      *
      * @return array
      */
-    public function getFlashes() : array;
+    public function getFlashes(): array;
 
     /**
      * Clear all flash values.
      *
      * Affects the next and subsequent requests.
      */
-    public function clearFlash() : void;
+    public function clearFlash(): void;
 
     /**
      * Prolongs any current flash messages for one more hop.
      */
-    public function prolongFlash() : void;
+    public function prolongFlash(): void;
 }

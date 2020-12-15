@@ -16,7 +16,6 @@ use Mezzio\Flash\FlashMessagesInterface;
 use Mezzio\Session\SessionInterface;
 use Mezzio\Session\SessionMiddleware;
 use PHPUnit\Framework\TestCase;
-use Prophecy\Argument;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -40,43 +39,64 @@ class FlashMessageMiddlewareTest extends TestCase
 
     public function testProcessRaisesExceptionIfRequestSessionAttributeDoesNotReturnSessionInterface()
     {
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getAttribute(SessionMiddleware::SESSION_ATTRIBUTE, false)->willReturn(false);
-        $request->withAttribute(
-            FlashMessageMiddleware::FLASH_ATTRIBUTE,
-            Argument::type(FlashMessagesInterface::class)
-        )->shouldNotBeCalled();
+        $request = $this->createMock(ServerRequestInterface::class);
+        $request
+            ->expects($this->once())
+            ->method('getAttribute')
+            ->with(SessionMiddleware::SESSION_ATTRIBUTE, false)
+            ->willReturn(false);
+        $request
+            ->expects($this->never())
+            ->method('withAttribute')
+            ->with(
+                FlashMessageMiddleware::FLASH_ATTRIBUTE,
+                $this->isInstanceOf(FlashMessagesInterface::class)
+            );
 
-        $handler = $this->prophesize(RequestHandlerInterface::class);
-        $handler->handle(Argument::type(ServerRequestInterface::class))->shouldNotBeCalled();
+        $handler = $this->createMock(RequestHandlerInterface::class);
+        $handler
+            ->expects($this->never())
+            ->method('handle')
+            ->with($this->isInstanceOf(ServerRequestInterface::class));
 
         $middleware = new FlashMessageMiddleware();
 
         $this->expectException(Exception\MissingSessionException::class);
         $this->expectExceptionMessage(FlashMessageMiddleware::class);
 
-        $middleware->process($request->reveal(), $handler->reveal());
+        $middleware->process($request, $handler);
     }
 
     public function testProcessUsesConfiguredClassAndSessionKeyAndAttributeKeyToCreateFlashMessagesAndPassToHandler()
     {
-        $session = $this->prophesize(SessionInterface::class)->reveal();
+        $session = $this->createMock(SessionInterface::class);
 
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $request->getAttribute(SessionMiddleware::SESSION_ATTRIBUTE, false)->willReturn($session);
-        $request->withAttribute(
-            'non-standard-flash-attr',
-            Argument::that(function (TestAsset\FlashMessages $flash) use ($session) {
-                $this->assertSame($session, $flash->session);
-                $this->assertSame('non-standard-flash-next', $flash->sessionKey);
-                return $flash;
-            })
-        )->will([$request, 'reveal']);
+        $request = $this->createMock(ServerRequestInterface::class);
+        $request
+            ->expects($this->once())
+            ->method('getAttribute')
+            ->with(SessionMiddleware::SESSION_ATTRIBUTE, false)
+            ->willReturn($session);
+        $request
+            ->expects($this->once())
+            ->method('withAttribute')
+            ->with(
+                'non-standard-flash-attr',
+                $this->callback(function (TestAsset\FlashMessages $flash) use ($session) {
+                    $this->assertSame($session, $flash->session);
+                    $this->assertSame('non-standard-flash-next', $flash->sessionKey);
+                    return true;
+                })
+            )->will($this->returnSelf());
 
-        $response = $this->prophesize(ResponseInterface::class)->reveal();
+        $response = $this->createMock(ResponseInterface::class);
 
-        $handler = $this->prophesize(RequestHandlerInterface::class);
-        $handler->handle(Argument::that([$request, 'reveal']))->willReturn($response);
+        $handler = $this->createMock(RequestHandlerInterface::class);
+        $handler
+            ->expects($this->once())
+            ->method('handle')
+            ->with($request)
+            ->willReturn($response);
 
         $middleware = new FlashMessageMiddleware(
             TestAsset\FlashMessages::class,
@@ -86,7 +106,7 @@ class FlashMessageMiddlewareTest extends TestCase
 
         $this->assertSame(
             $response,
-            $middleware->process($request->reveal(), $handler->reveal())
+            $middleware->process($request, $handler)
         );
     }
 }

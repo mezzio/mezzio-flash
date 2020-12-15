@@ -25,19 +25,13 @@ class FlashMessageMiddleware implements MiddlewareInterface
 {
     public const FLASH_ATTRIBUTE = 'flash';
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $attributeKey;
 
-    /**
-     * @var callable
-     */
+    /** @var callable */
     private $flashMessageFactory;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $sessionKey;
 
     public function __construct(
@@ -45,18 +39,19 @@ class FlashMessageMiddleware implements MiddlewareInterface
         string $sessionKey = FlashMessagesInterface::FLASH_NEXT,
         string $attributeKey = self::FLASH_ATTRIBUTE
     ) {
-        if (! class_exists($flashMessagesClass)
+        if (
+            ! class_exists($flashMessagesClass)
             || ! in_array(FlashMessagesInterface::class, class_implements($flashMessagesClass), true)
         ) {
             throw Exception\InvalidFlashMessagesImplementationException::forClass($flashMessagesClass);
         }
 
         $this->flashMessageFactory = [$flashMessagesClass, 'createFromSession'];
-        $this->sessionKey = $sessionKey;
-        $this->attributeKey = $attributeKey;
+        $this->sessionKey          = $sessionKey;
+        $this->attributeKey        = $attributeKey;
     }
 
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $session = $request->getAttribute(SessionMiddleware::SESSION_ATTRIBUTE, false);
         if (! $session instanceof SessionInterface) {
