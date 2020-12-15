@@ -2,27 +2,24 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 1.1.0 - TBD
+## 1.1.0 - 2020-12-15
 
-### Added
 
-- Nothing.
+-----
 
-### Changed
+### Release Notes for [1.1.0](https://github.com/mezzio/mezzio-flash/milestone/1)
 
-- Nothing.
 
-### Deprecated
 
-- Nothing.
+### 1.1.0
 
-### Removed
+- Total issues resolved: **1**
+- Total pull requests resolved: **1**
+- Total contributors: **2**
 
-- Nothing.
+#### Enhancement
 
-### Fixed
-
-- Nothing.
+ - [5: PHP 8 Support](https://github.com/mezzio/mezzio-flash/pull/5) thanks to @nynka and @boesing
 
 ## 1.0.1 - 2019-06-24
 
