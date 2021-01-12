@@ -37,6 +37,6 @@ $ composer require mezzio/mezzio-flash
 > accessing session data &mdash; and session persistence (how the session data
 > is persisted between requests, and reported to the client).
 >
-> Persistence requires a _persistence adapter_. We offer one basd on PHP's
+> Persistence requires a _persistence adapter_. We offer one based on PHP's
 > session extension via the package mezzio-session-ext; others may also
 > be available soon.
