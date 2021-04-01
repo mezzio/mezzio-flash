@@ -86,18 +86,15 @@ class FlashMessages implements FlashMessagesInterface
     }
 
     /**
-     * Set a flash value with the given key, but allow access during this request.
+     * Set a flash value with the given key, visible in the current request.
      *
-     * Flash values are generally accessible only on subsequent requests;
-     * using this method, you may make the value available during the current
-     * request as well.
-     *
-     * If you want the value to be visible only in the current request, you may
-     * pass zero as the third argument.
+     * Values set by flashNow are not visible on subsequent requests by default.
+     * If you want want your value to be visible in subsequent requests, you may
+     * set pass a positive integer as the third argument.
      *
      * @param mixed $value
      */
-    public function flashNow(string $key, $value, int $hops = 1): void
+    public function flashNow(string $key, $value, int $hops = 0): void
     {
         $this->currentMessages[$key] = $value;
         if ($hops > 0) {

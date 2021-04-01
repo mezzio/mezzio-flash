@@ -154,7 +154,39 @@ class FlashMessagesTest extends TestCase
         $this->assertSame([], $flash->getFlashes());
     }
 
-    public function testFlashNowMakesValueAvailableBothInNextSessionAndCurrentFlashMessages()
+    public function testFlashNowMakesValueAvailableInCurrentMessagesOnlyByDefault()
+    {
+        $this->session
+            ->expects($this->once())
+            ->method('has')
+            ->with(FlashMessagesInterface::FLASH_NEXT)
+            ->willReturn(false);
+        $this->session
+            ->expects($this->never())
+            ->method('get')
+            ->with(FlashMessagesInterface::FLASH_NEXT, [])
+            ->willReturn([]);
+        $this->session
+            ->expects($this->never())
+            ->method('set')
+            ->with(
+                FlashMessagesInterface::FLASH_NEXT,
+                [
+                    'test' => [
+                        'value' => 'value',
+                        'hops'  => 0,
+                    ],
+                ]
+            );
+
+        $flash = FlashMessages::createFromSession($this->session);
+        $flash->flashNow('test', 'value');
+
+        $this->assertSame('value', $flash->getFlash('test'));
+        $this->assertSame(['test' => 'value'], $flash->getFlashes());
+    }
+
+    public function testFlashNowCanMakeValueAvailableBothInNextSessionAndCurrentFlashMessages()
     {
         $this->session
             ->expects($this->once())
@@ -180,7 +212,7 @@ class FlashMessagesTest extends TestCase
             );
 
         $flash = FlashMessages::createFromSession($this->session);
-        $flash->flashNow('test', 'value');
+        $flash->flashNow('test', 'value', 1);
 
         $this->assertSame('value', $flash->getFlash('test'));
         $this->assertSame(['test' => 'value'], $flash->getFlashes());

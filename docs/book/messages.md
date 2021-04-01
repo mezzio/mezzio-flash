@@ -38,15 +38,15 @@ interface FlashMessagesInterface
     public function flash(string $key, $value, int $hops = 1) : void;
 
     /**
-     * Set a flash value with the given key, but allow access during this request.
+     * Set a flash value with the given key, visible to the current request.
      *
-     * Flash values are generally accessible only on subsequent requests;
-     * using this method, you may make the value available during the current
-     * request as well.
+     * Values set with this method are visible *only* in the current request; if 
+     * you want values to be visible in subsequent requests, you may pass a 
+     * positive integer as the third argument.
      *
      * @param mixed $value
      */
-    public function flashNow(string $key, $value, int $hops = 1) : void;
+     public function flashNow(string $key, $value, int $hops = 0) : void;
 
     /**
      * Retrieve a flash value.
@@ -165,18 +165,27 @@ one.
 ## Accessing messages in the current request
 
 When you create a flash message, it is available _in the next request_, but not
-the _current request_. If you want access to it in the current request as well,
-use the `flashNow()` method instead of `flash()`:
+the _current request_. If you want access to it in the current request, use the 
+`flashNow()` method instead of `flash()`:
 
 ```php
 $flashMessages->flashNow($messageName, $messageValue);
 ```
 
-The signature of this method is the same as for `flash()`, and allows you to
-optionally provide a `$hops` value as well. Unlike `flash()`, `flashNow()` will
-accept a value of zero for `$hops`, which is useful if you want your message to
-be visible _exclusively_ in the current request.
+By default, messages set via `flashNow()` are visible _only_ in the current
+request. If you want your message to visible on subsequent requests, you may
+pass a positive integer `$hops` as the third argument:
 
 ```php
-$flashMessages->flashNow($messageName, 'One night (request) only!', 0);
+// Message will be visible both in the current request, and the next.
+$flashMessages->flashNow($messageName, $messageValue, 1);
+```
+
+The above is equivalent to calling both `flash()` and `flashNow()` with the same
+name and value arguments:
+
+```php
+// Message will be visible both in the current request, and the next.
+$flashMessages->flashNow($messageName, $messageValue);
+$flashMessages->flash($messageName, $messageValue);
 ```
