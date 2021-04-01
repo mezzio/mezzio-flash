@@ -92,12 +92,17 @@ class FlashMessages implements FlashMessagesInterface
      * using this method, you may make the value available during the current
      * request as well.
      *
+     * If you want the value to be visible only in the current request, you may
+     * pass zero as the third argument.
+     *
      * @param mixed $value
      */
     public function flashNow(string $key, $value, int $hops = 1): void
     {
         $this->currentMessages[$key] = $value;
-        $this->flash($key, $value, $hops);
+        if ($hops > 0) {
+            $this->flash($key, $value, $hops);
+        }
     }
 
     /**
