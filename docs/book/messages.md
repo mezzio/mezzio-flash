@@ -136,6 +136,10 @@ the flash message will persist for. The default value is `1`, indicating a
 single hop. This value is provided when you call `flash()` as an optional third
 argument.
 
+The `$hops` value passed to `flash()` must be greater than zero. Passing a value
+less than one will result in `flash()` throwing an exception of type
+`Mezzio\Flash\Exception\InvalidHopsValueException`.
+
 To have a message persist for three "hops", you might call `flash()` as follows:
 
 ```php
@@ -169,4 +173,10 @@ $flashMessages->flashNow($messageName, $messageValue);
 ```
 
 The signature of this method is the same as for `flash()`, and allows you to
-optionally provide a `$hops` value as well.
+optionally provide a `$hops` value as well. Unlike `flash()`, `flashNow()` will
+accept a value of zero for `$hops`, which is useful if you want your message to
+be visible _exclusively_ in the current request.
+
+```php
+$flashMessages->flashNow($messageName, 'One night (request) only!', 0);
+```
