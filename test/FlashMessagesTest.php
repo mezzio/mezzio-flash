@@ -366,6 +366,24 @@ class FlashMessagesTest extends TestCase
             );
 
         $flash = FlashMessages::createFromSession($this->session);
+        $flash->flash('test', 'value', 0);
+    }
+
+    public function testFlashNowAcceptsZeroHops()
+    {
+        $flash = FlashMessages::createFromSession($this->session);
+        $flash->flashNow('test', 'value', 0);
+
+        $this->assertSame('value', $flash->getFlash('test'));
+    }
+
+    public function testFlashNowWithZeroHopsShouldNotSetValueToSession()
+    {
+        $this->session
+            ->expects($this->never())
+            ->method('set');
+
+        $flash = FlashMessages::createFromSession($this->session);
         $flash->flashNow('test', 'value', 0);
     }
 }
