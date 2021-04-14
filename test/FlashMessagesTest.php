@@ -371,8 +371,13 @@ class FlashMessagesTest extends TestCase
 
     public function testFlashNowAcceptsZeroHops()
     {
+        $this->session
+            ->expects($this->never())
+            ->method('set');
+
         $flash = FlashMessages::createFromSession($this->session);
         $flash->flashNow('test', 'value', 0);
+
         $this->assertSame('value', $flash->getFlash('test'));
     }
 }
