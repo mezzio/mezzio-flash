@@ -165,7 +165,7 @@ one.
 ## Accessing messages in the current request
 
 When you create a flash message, it is available _in the next request_, but not
-the _current request_. If you want access to it in the current request, use the 
+the _current request_. If you want access to it in the current request, use the
 `flashNow()` method instead of `flash()`:
 
 ```php
