@@ -1,7 +1,6 @@
 {
     "name": "mezzio/mezzio-flash",
     "description": "Flash messages for PSR-7 and PSR-15 applications using mezzio-session",
-    "license": "BSD-3-Clause",
     "keywords": [
         "laminas",
         "mezzio",
@@ -12,13 +11,19 @@
         "session"
     ],
     "homepage": "https://mezzio.dev",
-    "support": {
-        "docs": "https://docs.mezzio.dev/mezzio-flash/",
-        "issues": "https://github.com/mezzio/mezzio-flash/issues",
-        "source": "https://github.com/mezzio/mezzio-flash",
-        "rss": "https://github.com/mezzio/mezzio-flash/releases.atom",
-        "chat": "https://laminas.dev/chat",
-        "forum": "https://discourse.laminas.dev"
+    "license": "BSD-3-Clause",
+    "require": {
+        "php": "^7.3 || ~8.0.0",
+        "laminas/laminas-zendframework-bridge": "^1.0",
+        "mezzio/mezzio-session": "^1.0",
+        "psr/http-server-middleware": "^1.0"
+    },
+    "replace": {
+        "zendframework/zend-expressive-flash": "^1.0.1"
+    },
+    "require-dev": {
+        "laminas/laminas-coding-standard": "~2.1.0",
+        "phpunit/phpunit": "^9.3"
     },
     "config": {
         "sort-packages": true
@@ -27,16 +32,6 @@
         "laminas": {
             "config-provider": "Mezzio\\Flash\\ConfigProvider"
         }
-    },
-    "require": {
-        "php": "^7.3 || ~8.0.0",
-        "laminas/laminas-zendframework-bridge": "^1.0",
-        "mezzio/mezzio-session": "^1.0",
-        "psr/http-server-middleware": "^1.0"
-    },
-    "require-dev": {
-        "laminas/laminas-coding-standard": "~2.1.0",
-        "phpunit/phpunit": "^9.3"
     },
     "autoload": {
         "psr-4": {
@@ -58,7 +53,12 @@
         "test": "phpunit --colors=always",
         "test-coverage": "phpunit --colors=always --coverage-clover clover.xml"
     },
-    "replace": {
-        "zendframework/zend-expressive-flash": "^1.0.1"
+    "support": {
+        "issues": "https://github.com/mezzio/mezzio-flash/issues",
+        "forum": "https://discourse.laminas.dev",
+        "chat": "https://laminas.dev/chat",
+        "source": "https://github.com/mezzio/mezzio-flash",
+        "docs": "https://docs.mezzio.dev/mezzio-flash/",
+        "rss": "https://github.com/mezzio/mezzio-flash/releases.atom"
     }
 }
