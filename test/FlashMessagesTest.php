@@ -21,7 +21,7 @@ class FlashMessagesTest extends TestCase
         $this->session = $this->createMock(SessionInterface::class);
     }
 
-    public function testCreationAggregatesNothingIfNoMessagesExistUnderSpecifiedSessionKey()
+    public function testCreationAggregatesNothingIfNoMessagesExistUnderSpecifiedSessionKey(): void
     {
         $this->session
             ->expects($this->once())
@@ -38,7 +38,7 @@ class FlashMessagesTest extends TestCase
         $this->assertSame([], $flash->getFlashes());
     }
 
-    public function testCreationAggregatesItemsMarkedNextAndRemovesThemFromSession()
+    public function testCreationAggregatesItemsMarkedNextAndRemovesThemFromSession(): void
     {
         $messages = [
             'test'   => [
@@ -74,7 +74,7 @@ class FlashMessagesTest extends TestCase
         $this->assertSame(['test' => 'value1', 'test-2' => 'value2'], $flash->getFlashes());
     }
 
-    public function testCreationAggregatesPersistsItemsWithMultipleHopsInSessionWithDecrementedHops()
+    public function testCreationAggregatesPersistsItemsWithMultipleHopsInSessionWithDecrementedHops(): void
     {
         $messages                           = [
             'test'   => [
@@ -116,7 +116,7 @@ class FlashMessagesTest extends TestCase
         $this->assertSame(['test' => 'value1', 'test-2' => 'value2'], $flash->getFlashes());
     }
 
-    public function testFlashingAValueMakesItAvailableInNextSessionButNotFlashMessages()
+    public function testFlashingAValueMakesItAvailableInNextSessionButNotFlashMessages(): void
     {
         $this->session
             ->expects($this->once())
@@ -148,7 +148,7 @@ class FlashMessagesTest extends TestCase
         $this->assertSame([], $flash->getFlashes());
     }
 
-    public function testFlashNowMakesValueAvailableBothInNextSessionAndCurrentFlashMessages()
+    public function testFlashNowMakesValueAvailableBothInNextSessionAndCurrentFlashMessages(): void
     {
         $this->session
             ->expects($this->once())
@@ -180,7 +180,7 @@ class FlashMessagesTest extends TestCase
         $this->assertSame(['test' => 'value'], $flash->getFlashes());
     }
 
-    public function testProlongFlashAddsCurrentMessagesToNextSession()
+    public function testProlongFlashAddsCurrentMessagesToNextSession(): void
     {
         $messages = [
             'test'   => [
@@ -243,7 +243,7 @@ class FlashMessagesTest extends TestCase
         $flash->prolongFlash();
     }
 
-    public function testProlongFlashDoesNotReFlashMessagesThatAlreadyHaveMoreHops()
+    public function testProlongFlashDoesNotReFlashMessagesThatAlreadyHaveMoreHops(): void
     {
         $messages                           = [
             'test'   => [
@@ -290,7 +290,7 @@ class FlashMessagesTest extends TestCase
         $flash->prolongFlash();
     }
 
-    public function testClearFlashShouldRemoveAnyUnexpiredMessages()
+    public function testClearFlashShouldRemoveAnyUnexpiredMessages(): void
     {
         $messages                           = [
             'test'   => [
@@ -337,7 +337,7 @@ class FlashMessagesTest extends TestCase
         $flash->clearFlash();
     }
 
-    public function testCreationAggregatesThrowsExceptionIfInvalidNumberOfHops()
+    public function testCreationAggregatesThrowsExceptionIfInvalidNumberOfHops(): void
     {
         $this->expectException(InvalidHopsValueException::class);
 
@@ -363,7 +363,7 @@ class FlashMessagesTest extends TestCase
         $flash->flash('test', 'value', 0);
     }
 
-    public function testFlashNowAcceptsZeroHops()
+    public function testFlashNowAcceptsZeroHops(): void
     {
         $flash = FlashMessages::createFromSession($this->session);
         $flash->flashNow('test', 'value', 0);
@@ -371,7 +371,7 @@ class FlashMessagesTest extends TestCase
         $this->assertSame('value', $flash->getFlash('test'));
     }
 
-    public function testFlashNowWithZeroHopsShouldNotSetValueToSession()
+    public function testFlashNowWithZeroHopsShouldNotSetValueToSession(): void
     {
         $this->session
             ->expects($this->never())

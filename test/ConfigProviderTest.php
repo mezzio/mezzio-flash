@@ -26,8 +26,10 @@ class ConfigProviderTest extends TestCase
 
     /**
      * @depends testInvocationReturnsArray
+     *
+     * @return void
      */
-    public function testReturnedArrayContainsDependencies(array $config)
+    public function testReturnedArrayContainsDependencies(array $config): void
     {
         $this->assertArrayHasKey('dependencies', $config);
         $this->assertIsArray($config['dependencies']);
