@@ -44,7 +44,7 @@ class FlashMessages implements FlashMessagesInterface
     {
         $this->session    = $session;
         $this->sessionKey = $sessionKey;
-        $this->prepareMessages($session);
+        $this->prepareMessages($session, $sessionKey);
     }
 
     /**
@@ -159,15 +159,13 @@ class FlashMessages implements FlashMessagesInterface
         }
     }
 
-    public function prepareMessages(SessionInterface $session): void
+    public function prepareMessages(SessionInterface $session, string $sessionKey): void
     {
-        $sessionKey = $this->sessionKey;
-
         if (! $session->has($sessionKey)) {
             return;
         }
 
-        $sessionMessages = $this->getMessagesFromSession();
+        $sessionMessages = $this->getMessagesFromSession($sessionKey);
 
         /** @var array<string,mixed> $currentMessages */
         $currentMessages = [];
@@ -193,10 +191,10 @@ class FlashMessages implements FlashMessagesInterface
     /**
      * @return SessionMessages
      */
-    private function getMessagesFromSession(): array
+    private function getMessagesFromSession(string $sessionKey = null): array
     {
         /** @var SessionMessages|null $messages */
-        $messages = $this->session->get($this->sessionKey, []);
+        $messages = $this->session->get($sessionKey ?? $this->sessionKey, []);
         return ! is_array($messages) ? [] : $messages;
     }
 }
