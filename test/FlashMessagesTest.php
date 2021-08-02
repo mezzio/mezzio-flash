@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
 
 class FlashMessagesTest extends TestCase
 {
-    /** @var SessionInterface|MockObject */
+    /** @var SessionInterface&MockObject */
     private $session;
 
     public function setUp(): void
