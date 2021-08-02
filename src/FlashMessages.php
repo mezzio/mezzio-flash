@@ -191,7 +191,7 @@ class FlashMessages implements FlashMessagesInterface
     /**
      * @return SessionMessages
      */
-    private function getMessagesFromSession(string $sessionKey = null): array
+    private function getMessagesFromSession(?string $sessionKey = null): array
     {
         /** @var SessionMessages|null $messages */
         $messages = $this->session->get($sessionKey ?? $this->sessionKey, []);
