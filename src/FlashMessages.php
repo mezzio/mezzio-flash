@@ -170,6 +170,12 @@ class FlashMessages implements FlashMessagesInterface
         /** @var array<string,mixed> $currentMessages */
         $currentMessages = [];
         foreach ($sessionMessages as $key => $data) {
+            /**
+             * The public API of flash() and flashNow() explicitly allow calling
+             * code to pass `$value`s of any time, making this unavoidable.
+             *
+             * @psalm-suppress MixedAssignment
+             */
             $currentMessages[$key] = $data['value'];
 
             if ($data['hops'] === 1) {
