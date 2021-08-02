@@ -172,7 +172,7 @@ class FlashMessages implements FlashMessagesInterface
         foreach ($sessionMessages as $key => $data) {
             /**
              * The public API of flash() and flashNow() explicitly allow calling
-             * code to pass `$value`s of any time, making this unavoidable.
+             * code to pass `$value`s of any type, making this unavoidable.
              *
              * @psalm-suppress MixedAssignment
              */
