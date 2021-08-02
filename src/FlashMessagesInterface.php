@@ -36,15 +36,15 @@ interface FlashMessagesInterface
     public function flash(string $key, $value, int $hops = 1): void;
 
     /**
-     * Set a flash value with the given key, but allow access during this request.
+     * Set a flash value with the given key, visible to the current request.
      *
-     * Flash values are generally accessible only on subsequent requests;
-     * using this method, you may make the value available during the current
-     * request as well.
+     * Values set with this method are visible *only* in the current request; if
+     * you want values to be visible in subsequent requests, you may pass a
+     * positive integer as the third argument.
      *
      * @param mixed $value
      */
-    public function flashNow(string $key, $value, int $hops = 1): void;
+    public function flashNow(string $key, $value, int $hops = 0): void;
 
     /**
      * Retrieve a flash value.
