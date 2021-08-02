@@ -61,8 +61,10 @@ class FlashMessageMiddlewareTest extends TestCase
         $middleware->process($request, $handler);
     }
 
+    // @codingStandardsIgnoreStart
     public function testProcessUsesConfiguredClassAndSessionKeyAndAttributeKeyToCreateFlashMessagesAndPassToHandler(): void
     {
+        // @codingStandardsIgnoreEnd
         $session = $this->createMock(SessionInterface::class);
 
         $request = $this->createMock(ServerRequestInterface::class);
