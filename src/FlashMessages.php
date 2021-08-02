@@ -26,10 +26,12 @@ use function is_array;
  *
  * In order to keep messages made available to the current request for another
  * hop, use the `prolongFlash()` method.
+ *
+ * @psalm-type SessionMessages = array<string,array{value:mixed,hops:int}>
  */
 class FlashMessages implements FlashMessagesInterface
 {
-    /** @var array */
+    /** @var array<string,mixed> */
     private $currentMessages = [];
 
     /** @var SessionInterface */
@@ -42,7 +44,7 @@ class FlashMessages implements FlashMessagesInterface
     {
         $this->session    = $session;
         $this->sessionKey = $sessionKey;
-        $this->prepareMessages($session, $sessionKey);
+        $this->prepareMessages($session);
     }
 
     /**
@@ -71,7 +73,7 @@ class FlashMessages implements FlashMessagesInterface
             throw Exception\InvalidHopsValueException::valueTooLow($key, $hops);
         }
 
-        $messages       = $this->session->get($this->sessionKey, []);
+        $messages       = $this->getMessagesFromSession();
         $messages[$key] = [
             'value' => $value,
             'hops'  => $hops,
@@ -145,7 +147,9 @@ class FlashMessages implements FlashMessagesInterface
      */
     public function prolongFlash(): void
     {
-        $messages = $this->session->get($this->sessionKey, []);
+        $messages = $this->getMessagesFromSession();
+
+        /** @var mixed $value */
         foreach ($this->currentMessages as $key => $value) {
             if (isset($messages[$key])) {
                 continue;
@@ -155,15 +159,17 @@ class FlashMessages implements FlashMessagesInterface
         }
     }
 
-    public function prepareMessages(SessionInterface $session, string $sessionKey): void
+    public function prepareMessages(SessionInterface $session): void
     {
+        $sessionKey = $this->sessionKey;
+
         if (! $session->has($sessionKey)) {
             return;
         }
 
-        $sessionMessages = $session->get($sessionKey);
-        $sessionMessages = ! is_array($sessionMessages) ? [] : $sessionMessages;
+        $sessionMessages = $this->getMessagesFromSession();
 
+        /** @var array<string,mixed> $currentMessages */
         $currentMessages = [];
         foreach ($sessionMessages as $key => $data) {
             $currentMessages[$key] = $data['value'];
@@ -182,5 +188,15 @@ class FlashMessages implements FlashMessagesInterface
             : $session->set($sessionKey, $sessionMessages);
 
         $this->currentMessages = $currentMessages;
+    }
+
+    /**
+     * @return SessionMessages
+     */
+    private function getMessagesFromSession(): array
+    {
+        /** @var SessionMessages|null $messages */
+        $messages = $this->session->get($this->sessionKey, []);
+        return ! is_array($messages) ? [] : $messages;
     }
 }
