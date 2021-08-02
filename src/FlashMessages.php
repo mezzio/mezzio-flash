@@ -27,7 +27,7 @@ use function is_array;
  * In order to keep messages made available to the current request for another
  * hop, use the `prolongFlash()` method.
  *
- * @psalm-type SessionMessages = array<string,array{value:mixed,hops:int}>
+ * @psalm-type StoredMessages = array<string,array{value:mixed,hops:int}>
  */
 class FlashMessages implements FlashMessagesInterface
 {
@@ -73,7 +73,7 @@ class FlashMessages implements FlashMessagesInterface
             throw Exception\InvalidHopsValueException::valueTooLow($key, $hops);
         }
 
-        $messages       = $this->getMessagesFromSession();
+        $messages       = $this->getStoredMessages();
         $messages[$key] = [
             'value' => $value,
             'hops'  => $hops,
@@ -147,7 +147,7 @@ class FlashMessages implements FlashMessagesInterface
      */
     public function prolongFlash(): void
     {
-        $messages = $this->getMessagesFromSession();
+        $messages = $this->getStoredMessages();
 
         /** @var mixed $value */
         foreach ($this->currentMessages as $key => $value) {
@@ -165,7 +165,7 @@ class FlashMessages implements FlashMessagesInterface
             return;
         }
 
-        $sessionMessages = $this->getMessagesFromSession($sessionKey);
+        $sessionMessages = $this->getStoredMessages($sessionKey);
 
         /** @var array<string,mixed> $currentMessages */
         $currentMessages = [];
@@ -189,11 +189,11 @@ class FlashMessages implements FlashMessagesInterface
     }
 
     /**
-     * @return SessionMessages
+     * @return StoredMessages
      */
-    private function getMessagesFromSession(?string $sessionKey = null): array
+    private function getStoredMessages(?string $sessionKey = null): array
     {
-        /** @var SessionMessages|null $messages */
+        /** @var StoredMessages|null $messages */
         $messages = $this->session->get($sessionKey ?? $this->sessionKey, []);
         return ! is_array($messages) ? [] : $messages;
     }
