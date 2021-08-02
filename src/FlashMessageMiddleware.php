@@ -22,7 +22,10 @@ class FlashMessageMiddleware implements MiddlewareInterface
     /** @var string */
     private $attributeKey;
 
-    /** @var callable */
+    /**
+     * @var callable
+     * @psalm-var callable(SessionInterface, string):array | array{ 0: class-string, 1: string }
+     */
     private $flashMessageFactory;
 
     /** @var string */
