@@ -5,9 +5,4 @@
       <code>$currentMessages[$key]</code>
     </MixedAssignment>
   </file>
-  <file src="test/ConfigProviderTest.php">
-    <RedundantCondition occurrences="1">
-      <code>assertIsArray</code>
-    </RedundantCondition>
-  </file>
 </files>
