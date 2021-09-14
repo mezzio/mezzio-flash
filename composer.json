@@ -29,8 +29,7 @@
         }
     },
     "require": {
-        "php": "^7.3 || ~8.0.0",
-        "laminas/laminas-zendframework-bridge": "^1.0",
+        "php": "^7.3 || ~8.0.0 || ~8.1.0",
         "mezzio/mezzio-session": "^1.0",
         "psr/http-server-middleware": "^1.0"
     },
@@ -58,7 +57,7 @@
         "test": "phpunit --colors=always",
         "test-coverage": "phpunit --colors=always --coverage-clover clover.xml"
     },
-    "replace": {
-        "zendframework/zend-expressive-flash": "^1.0.1"
+    "conflict": {
+        "zendframework/zend-expressive-flash": "*"
     }
 }
