@@ -18,6 +18,7 @@ class ConfigProvider
         return [
             // Legacy Zend Framework aliases
             'aliases'    => [
+                // phpcs:ignore
                 'Zend\Expressive\Flash\FlashMessageMiddleware' => FlashMessageMiddleware::class,
             ],
             'invokables' => [
