@@ -6,8 +6,6 @@ namespace Mezzio\Flash;
 
 use Mezzio\Session\SessionInterface;
 
-use function is_array;
-
 /**
  * Create, retrieve, and manipulate flash messages.
  *
@@ -201,6 +199,6 @@ class FlashMessages implements FlashMessagesInterface
     {
         /** @var StoredMessages|null $messages */
         $messages = $this->session->get($sessionKey ?? $this->sessionKey, []);
-        return ! is_array($messages) ? [] : $messages;
+        return $messages ?? [];
     }
 }

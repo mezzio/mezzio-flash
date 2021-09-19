@@ -24,7 +24,7 @@ class FlashMessageMiddleware implements MiddlewareInterface
 
     /**
      * @var callable
-     * @psalm-var callable(SessionInterface, string):array | array{ 0: class-string, 1: string }
+     * @psalm-var callable(SessionInterface, string):array
      */
     private $flashMessageFactory;
 
@@ -43,6 +43,7 @@ class FlashMessageMiddleware implements MiddlewareInterface
             throw Exception\InvalidFlashMessagesImplementationException::forClass($flashMessagesClass);
         }
 
+        /** @psalm-var callable(SessionInterface, string):array */
         $this->flashMessageFactory = [$flashMessagesClass, 'createFromSession'];
         $this->sessionKey          = $sessionKey;
         $this->attributeKey        = $attributeKey;
