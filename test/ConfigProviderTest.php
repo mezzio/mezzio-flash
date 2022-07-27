@@ -17,17 +17,20 @@ class ConfigProviderTest extends TestCase
         $this->provider = new ConfigProvider();
     }
 
+    /** @return array<string, mixed> */
     public function testInvocationReturnsArray(): array
     {
-        $config = ($this->provider)();
-        $this->assertIsArray($config);
+        $config = $this->provider->__invoke();
+        $this->assertNotEmpty($config);
+
         return $config;
     }
 
     /**
      * @depends testInvocationReturnsArray
+     * @param array<string, mixed> $config
      */
-    public function testReturnedArrayContainsDependencies(array $config)
+    public function testReturnedArrayContainsDependencies(array $config): void
     {
         $this->assertArrayHasKey('dependencies', $config);
         $this->assertIsArray($config['dependencies']);

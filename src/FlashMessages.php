@@ -6,7 +6,9 @@ namespace Mezzio\Flash;
 
 use Mezzio\Session\SessionInterface;
 
+use function assert;
 use function is_array;
+use function is_string;
 
 /**
  * Create, retrieve, and manipulate flash messages.
@@ -29,7 +31,7 @@ use function is_array;
  */
 class FlashMessages implements FlashMessagesInterface
 {
-    /** @var array */
+    /** @var array<string, mixed> */
     private $currentMessages = [];
 
     /** @var SessionInterface */
@@ -146,6 +148,7 @@ class FlashMessages implements FlashMessagesInterface
     public function prolongFlash(): void
     {
         $messages = $this->session->get($this->sessionKey, []);
+        /** @var mixed $value */
         foreach ($this->currentMessages as $key => $value) {
             if (isset($messages[$key])) {
                 continue;
@@ -161,11 +164,17 @@ class FlashMessages implements FlashMessagesInterface
             return;
         }
 
+        /** @var mixed $sessionMessages */
         $sessionMessages = $session->get($sessionKey);
         $sessionMessages = ! is_array($sessionMessages) ? [] : $sessionMessages;
 
         $currentMessages = [];
         foreach ($sessionMessages as $key => $data) {
+            assert(is_string($key));
+            if (! is_array($data) || ! isset($data['hops']) || ! isset($data['value'])) {
+                continue;
+            }
+
             $currentMessages[$key] = $data['value'];
 
             if ($data['hops'] === 1) {

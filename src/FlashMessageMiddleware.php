@@ -22,12 +22,15 @@ class FlashMessageMiddleware implements MiddlewareInterface
     /** @var string */
     private $attributeKey;
 
-    /** @var callable */
+    /** @var callable(SessionInterface, string): FlashMessagesInterface */
     private $flashMessageFactory;
 
     /** @var string */
     private $sessionKey;
 
+    /**
+     * @param class-string<FlashMessagesInterface> $flashMessagesClass
+     */
     public function __construct(
         string $flashMessagesClass = FlashMessages::class,
         string $sessionKey = FlashMessagesInterface::FLASH_NEXT,

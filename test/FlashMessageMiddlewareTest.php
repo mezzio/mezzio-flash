@@ -17,21 +17,23 @@ use stdClass;
 
 class FlashMessageMiddlewareTest extends TestCase
 {
-    public function testConstructorRaisesExceptionIfFlashMessagesClassIsNotAClass()
+    public function testConstructorRaisesExceptionIfFlashMessagesClassIsNotAClass(): void
     {
         $this->expectException(Exception\InvalidFlashMessagesImplementationException::class);
         $this->expectExceptionMessage('not-a-class');
+        /** @psalm-suppress ArgumentTypeCoercion, UndefinedClass */
         new FlashMessageMiddleware('not-a-class');
     }
 
-    public function testConstructorRaisesExceptionIfFlashMessagesClassDoesNotImplementCorrectInterface()
+    public function testConstructorRaisesExceptionIfFlashMessagesClassDoesNotImplementCorrectInterface(): void
     {
         $this->expectException(Exception\InvalidFlashMessagesImplementationException::class);
         $this->expectExceptionMessage('stdClass');
+        /** @psalm-suppress InvalidArgument */
         new FlashMessageMiddleware(stdClass::class);
     }
 
-    public function testProcessRaisesExceptionIfRequestSessionAttributeDoesNotReturnSessionInterface()
+    public function testProcessRaisesExceptionIfRequestSessionAttributeDoesNotReturnSessionInterface(): void
     {
         $request = $this->createMock(ServerRequestInterface::class);
         $request
@@ -61,7 +63,8 @@ class FlashMessageMiddlewareTest extends TestCase
         $middleware->process($request, $handler);
     }
 
-    public function testProcessUsesConfiguredClassAndSessionKeyAndAttributeKeyToCreateFlashMessagesAndPassToHandler()
+    /** @phpcs:disable Generic.Files.LineLength.TooLong */
+    public function testProcessUsesConfiguredClassAndSessionKeyAndAttributeKeyToCreateFlashMessagesAndPassToHandler(): void
     {
         $session = $this->createMock(SessionInterface::class);
 

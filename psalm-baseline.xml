@@ -1,3 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <files psalm-version="4.24.0@06dd975cb55d36af80f242561738f16c5f58264f">
+  <file src="src/FlashMessages.php">
+    <MixedArrayAssignment occurrences="1">
+      <code>$messages[$key]</code>
+    </MixedArrayAssignment>
+    <MixedAssignment occurrences="4">
+      <code>$currentMessages[$key]</code>
+      <code>$data['hops']</code>
+      <code>$messages</code>
+      <code>$messages</code>
+    </MixedAssignment>
+    <MixedOperand occurrences="1">
+      <code>$data['hops']</code>
+    </MixedOperand>
+  </file>
 </files>
