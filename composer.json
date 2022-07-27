@@ -24,6 +24,9 @@
         "sort-packages": true,
         "platform": {
             "php": "7.3.99"
+        },
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
         }
     },
     "extra": {
@@ -37,8 +40,8 @@
         "psr/http-server-middleware": "^1.0"
     },
     "require-dev": {
-        "laminas/laminas-coding-standard": "~2.2.0",
-        "phpunit/phpunit": "^9.3"
+        "laminas/laminas-coding-standard": "~2.3.0",
+        "phpunit/phpunit": "^9.5.21"
     },
     "autoload": {
         "psr-4": {
