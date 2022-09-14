@@ -23,7 +23,7 @@
     "config": {
         "sort-packages": true,
         "platform": {
-            "php": "7.3.99"
+            "php": "7.4.99"
         },
         "allow-plugins": {
             "dealerdirect/phpcodesniffer-composer-installer": true
@@ -35,12 +35,12 @@
         }
     },
     "require": {
-        "php": "^7.3 || ~8.0.0 || ~8.1.0",
+        "php": "^7.4 || ~8.0.0 || ~8.1.0",
         "mezzio/mezzio-session": "^1.0",
         "psr/http-server-middleware": "^1.0"
     },
     "require-dev": {
-        "laminas/laminas-coding-standard": "~2.2.0",
+        "laminas/laminas-coding-standard": "~2.4.0",
         "phpunit/phpunit": "^9.5.24"
     },
     "autoload": {
