@@ -6,8 +6,6 @@ namespace Mezzio\Flash;
 
 use Mezzio\Session\SessionInterface;
 
-use function is_array;
-
 /**
  * Create, retrieve, and manipulate flash messages.
  *
@@ -26,10 +24,12 @@ use function is_array;
  *
  * In order to keep messages made available to the current request for another
  * hop, use the `prolongFlash()` method.
+ *
+ * @psalm-type StoredMessages = array<string,array{value:mixed,hops:int}>
  */
 class FlashMessages implements FlashMessagesInterface
 {
-    /** @var array */
+    /** @var array<string,mixed> */
     private $currentMessages = [];
 
     /** @var SessionInterface */
@@ -71,7 +71,7 @@ class FlashMessages implements FlashMessagesInterface
             throw Exception\InvalidHopsValueException::valueTooLow($key, $hops);
         }
 
-        $messages       = $this->session->get($this->sessionKey, []);
+        $messages       = $this->getStoredMessages();
         $messages[$key] = [
             'value' => $value,
             'hops'  => $hops,
@@ -145,7 +145,9 @@ class FlashMessages implements FlashMessagesInterface
      */
     public function prolongFlash(): void
     {
-        $messages = $this->session->get($this->sessionKey, []);
+        $messages = $this->getStoredMessages();
+
+        /** @var mixed $value */
         foreach ($this->currentMessages as $key => $value) {
             if (isset($messages[$key])) {
                 continue;
@@ -161,11 +163,17 @@ class FlashMessages implements FlashMessagesInterface
             return;
         }
 
-        $sessionMessages = $session->get($sessionKey);
-        $sessionMessages = ! is_array($sessionMessages) ? [] : $sessionMessages;
+        $sessionMessages = $this->getStoredMessages($sessionKey);
 
+        /** @var array<string,mixed> $currentMessages */
         $currentMessages = [];
         foreach ($sessionMessages as $key => $data) {
+            /**
+             * The public API of flash() and flashNow() explicitly allow calling
+             * code to pass `$value`s of any type, making this unavoidable.
+             *
+             * @psalm-suppress MixedAssignment
+             */
             $currentMessages[$key] = $data['value'];
 
             if ($data['hops'] === 1) {
@@ -182,5 +190,15 @@ class FlashMessages implements FlashMessagesInterface
             : $session->set($sessionKey, $sessionMessages);
 
         $this->currentMessages = $currentMessages;
+    }
+
+    /**
+     * @return StoredMessages
+     */
+    private function getStoredMessages(?string $sessionKey = null): array
+    {
+        /** @var StoredMessages|null $messages */
+        $messages = $this->session->get($sessionKey ?? $this->sessionKey, []);
+        return $messages ?? [];
     }
 }

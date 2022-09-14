@@ -11,9 +11,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-use function class_exists;
-use function class_implements;
-use function in_array;
+use function is_callable;
 
 class FlashMessageMiddleware implements MiddlewareInterface
 {
@@ -22,7 +20,7 @@ class FlashMessageMiddleware implements MiddlewareInterface
     /** @var string */
     private $attributeKey;
 
-    /** @var callable */
+    /** @psalm-var callable(SessionInterface, string): FlashMessagesInterface */
     private $flashMessageFactory;
 
     /** @var string */
@@ -33,14 +31,12 @@ class FlashMessageMiddleware implements MiddlewareInterface
         string $sessionKey = FlashMessagesInterface::FLASH_NEXT,
         string $attributeKey = self::FLASH_ATTRIBUTE
     ) {
-        if (
-            ! class_exists($flashMessagesClass)
-            || ! in_array(FlashMessagesInterface::class, class_implements($flashMessagesClass), true)
-        ) {
+        $factory = [$flashMessagesClass, 'createFromSession'];
+        if (! is_callable($factory)) {
             throw Exception\InvalidFlashMessagesImplementationException::forClass($flashMessagesClass);
         }
 
-        $this->flashMessageFactory = [$flashMessagesClass, 'createFromSession'];
+        $this->flashMessageFactory = $factory;
         $this->sessionKey          = $sessionKey;
         $this->attributeKey        = $attributeKey;
     }

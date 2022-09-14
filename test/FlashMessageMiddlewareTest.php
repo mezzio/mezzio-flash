@@ -17,21 +17,21 @@ use stdClass;
 
 class FlashMessageMiddlewareTest extends TestCase
 {
-    public function testConstructorRaisesExceptionIfFlashMessagesClassIsNotAClass()
+    public function testConstructorRaisesExceptionIfFlashMessagesClassIsNotAClass(): void
     {
         $this->expectException(Exception\InvalidFlashMessagesImplementationException::class);
         $this->expectExceptionMessage('not-a-class');
         new FlashMessageMiddleware('not-a-class');
     }
 
-    public function testConstructorRaisesExceptionIfFlashMessagesClassDoesNotImplementCorrectInterface()
+    public function testConstructorRaisesExceptionIfFlashMessagesClassDoesNotImplementCorrectInterface(): void
     {
         $this->expectException(Exception\InvalidFlashMessagesImplementationException::class);
         $this->expectExceptionMessage('stdClass');
         new FlashMessageMiddleware(stdClass::class);
     }
 
-    public function testProcessRaisesExceptionIfRequestSessionAttributeDoesNotReturnSessionInterface()
+    public function testProcessRaisesExceptionIfRequestSessionAttributeDoesNotReturnSessionInterface(): void
     {
         $request = $this->createMock(ServerRequestInterface::class);
         $request
@@ -61,8 +61,10 @@ class FlashMessageMiddlewareTest extends TestCase
         $middleware->process($request, $handler);
     }
 
-    public function testProcessUsesConfiguredClassAndSessionKeyAndAttributeKeyToCreateFlashMessagesAndPassToHandler()
+    // @codingStandardsIgnoreStart
+    public function testProcessUsesConfiguredClassAndSessionKeyAndAttributeKeyToCreateFlashMessagesAndPassToHandler(): void
     {
+        // @codingStandardsIgnoreEnd
         $session = $this->createMock(SessionInterface::class);
 
         $request = $this->createMock(ServerRequestInterface::class);
