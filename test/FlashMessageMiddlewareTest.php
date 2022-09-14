@@ -78,7 +78,7 @@ class FlashMessageMiddlewareTest extends TestCase
             ->method('withAttribute')
             ->with(
                 'non-standard-flash-attr',
-                $this->callback(function (TestAsset\FlashMessages $flash) use ($session) {
+                $this->callback(function (TestAsset\FlashMessages $flash) use ($session): bool {
                     $this->assertSame($session, $flash->session);
                     $this->assertSame('non-standard-flash-next', $flash->sessionKey);
                     return true;

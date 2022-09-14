@@ -30,13 +30,11 @@ use Mezzio\Session\SessionInterface;
 class FlashMessages implements FlashMessagesInterface
 {
     /** @var array<string,mixed> */
-    private $currentMessages = [];
+    private array $currentMessages = [];
 
-    /** @var SessionInterface */
-    private $session;
+    private SessionInterface $session;
 
-    /** @var string */
-    private $sessionKey;
+    private string $sessionKey;
 
     private function __construct(SessionInterface $session, string $sessionKey)
     {

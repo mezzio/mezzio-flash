@@ -17,14 +17,12 @@ class FlashMessageMiddleware implements MiddlewareInterface
 {
     public const FLASH_ATTRIBUTE = 'flash';
 
-    /** @var string */
-    private $attributeKey;
+    private string $attributeKey;
 
     /** @psalm-var callable(SessionInterface, string): FlashMessagesInterface */
     private $flashMessageFactory;
 
-    /** @var string */
-    private $sessionKey;
+    private string $sessionKey;
 
     public function __construct(
         string $flashMessagesClass = FlashMessages::class,
