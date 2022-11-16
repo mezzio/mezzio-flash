@@ -17,17 +17,13 @@ class FlashMessageMiddleware implements MiddlewareInterface
 {
     public const FLASH_ATTRIBUTE = 'flash';
 
-    private string $attributeKey;
-
     /** @psalm-var callable(SessionInterface, string): FlashMessagesInterface */
     private $flashMessageFactory;
 
-    private string $sessionKey;
-
     public function __construct(
         string $flashMessagesClass = FlashMessages::class,
-        string $sessionKey = FlashMessagesInterface::FLASH_NEXT,
-        string $attributeKey = self::FLASH_ATTRIBUTE
+        private string $sessionKey = FlashMessagesInterface::FLASH_NEXT,
+        private string $attributeKey = self::FLASH_ATTRIBUTE
     ) {
         $factory = [$flashMessagesClass, 'createFromSession'];
         if (! is_callable($factory)) {
@@ -35,8 +31,6 @@ class FlashMessageMiddleware implements MiddlewareInterface
         }
 
         $this->flashMessageFactory = $factory;
-        $this->sessionKey          = $sessionKey;
-        $this->attributeKey        = $attributeKey;
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
