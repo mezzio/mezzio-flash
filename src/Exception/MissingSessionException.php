@@ -7,7 +7,6 @@ namespace Mezzio\Flash\Exception;
 use Psr\Http\Server\MiddlewareInterface;
 use RuntimeException;
 
-use function get_class;
 use function sprintf;
 
 class MissingSessionException extends RuntimeException implements ExceptionInterface
@@ -16,7 +15,7 @@ class MissingSessionException extends RuntimeException implements ExceptionInter
     {
         return new self(sprintf(
             'Unable to create flash messages in %s; missing session attribute',
-            get_class($middleware)
+            $middleware::class
         ));
     }
 }

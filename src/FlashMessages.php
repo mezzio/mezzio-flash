@@ -32,14 +32,8 @@ class FlashMessages implements FlashMessagesInterface
     /** @var array<string,mixed> */
     private array $currentMessages = [];
 
-    private SessionInterface $session;
-
-    private string $sessionKey;
-
-    private function __construct(SessionInterface $session, string $sessionKey)
+    private function __construct(private SessionInterface $session, private string $sessionKey)
     {
-        $this->session    = $session;
-        $this->sessionKey = $sessionKey;
         $this->prepareMessages($session, $sessionKey);
     }
 
@@ -120,8 +114,6 @@ class FlashMessages implements FlashMessagesInterface
      * was called in this request.
      *
      * WILL NOT return values set in the current request via `flash()`.
-     *
-     * @return array
      */
     public function getFlashes(): array
     {
