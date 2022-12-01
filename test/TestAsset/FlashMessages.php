@@ -43,7 +43,7 @@ class FlashMessages implements FlashMessagesInterface
 
     /**
      * @param mixed|null $default
-     * @return mixed|void
+     * @return void
      */
     public function getFlash(string $key, $default = null)
     {
