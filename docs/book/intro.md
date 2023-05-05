@@ -1,7 +1,7 @@
 # mezzio-flash
 
 _Flash messages_ are self-expiring, session-based messages. They are typically
-used when when you need to redirect after processing a request (e.g., when using
+used when you need to redirect after processing a request (e.g., when using
 the [Post-Redirect-Get pattern](https://en.wikipedia.org/wiki/Post/Redirect/Get)),
 but want to display a message back to the user indicating a processing result.
 
