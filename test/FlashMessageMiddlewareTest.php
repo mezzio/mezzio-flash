@@ -35,23 +35,23 @@ class FlashMessageMiddlewareTest extends TestCase
     {
         $request = $this->createMock(ServerRequestInterface::class);
         $request
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getAttribute')
             ->with(SessionMiddleware::SESSION_ATTRIBUTE, false)
             ->willReturn(false);
         $request
-            ->expects($this->never())
+            ->expects(self::never())
             ->method('withAttribute')
             ->with(
                 FlashMessageMiddleware::FLASH_ATTRIBUTE,
-                $this->isInstanceOf(FlashMessagesInterface::class)
+                self::isInstanceOf(FlashMessagesInterface::class)
             );
 
         $handler = $this->createMock(RequestHandlerInterface::class);
         $handler
-            ->expects($this->never())
+            ->expects(self::never())
             ->method('handle')
-            ->with($this->isInstanceOf(ServerRequestInterface::class));
+            ->with(self::isInstanceOf(ServerRequestInterface::class));
 
         $middleware = new FlashMessageMiddleware();
 
@@ -69,27 +69,27 @@ class FlashMessageMiddlewareTest extends TestCase
 
         $request = $this->createMock(ServerRequestInterface::class);
         $request
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getAttribute')
             ->with(SessionMiddleware::SESSION_ATTRIBUTE, false)
             ->willReturn($session);
         $request
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('withAttribute')
             ->with(
                 'non-standard-flash-attr',
-                $this->callback(function (TestAsset\FlashMessages $flash) use ($session): bool {
-                    $this->assertSame($session, $flash->session);
-                    $this->assertSame('non-standard-flash-next', $flash->sessionKey);
+                self::callback(function (TestAsset\FlashMessages $flash) use ($session): bool {
+                    self::assertSame($session, $flash->session);
+                    self::assertSame('non-standard-flash-next', $flash->sessionKey);
                     return true;
                 })
-            )->will($this->returnSelf());
+            )->will(self::returnSelf());
 
         $response = $this->createMock(ResponseInterface::class);
 
         $handler = $this->createMock(RequestHandlerInterface::class);
         $handler
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('handle')
             ->with($request)
             ->willReturn($response);
@@ -100,7 +100,7 @@ class FlashMessageMiddlewareTest extends TestCase
             'non-standard-flash-attr'
         );
 
-        $this->assertSame(
+        self::assertSame(
             $response,
             $middleware->process($request, $handler)
         );
