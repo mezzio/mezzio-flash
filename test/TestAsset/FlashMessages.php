@@ -9,15 +9,10 @@ use Mezzio\Session\SessionInterface;
 
 class FlashMessages implements FlashMessagesInterface
 {
-    /** @var SessionInterface */
-    public $session;
-    /** @var string */
-    public $sessionKey;
-
-    public function __construct(SessionInterface $session, string $sessionKey)
-    {
-        $this->session    = $session;
-        $this->sessionKey = $sessionKey;
+    public function __construct(
+        public readonly SessionInterface $session,
+        public readonly string $sessionKey,
+    ) {
     }
 
     public static function createFromSession(
