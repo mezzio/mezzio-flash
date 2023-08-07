@@ -83,7 +83,7 @@ class FlashMessageMiddlewareTest extends TestCase
                     self::assertSame('non-standard-flash-next', $flash->sessionKey);
                     return true;
                 })
-            )->will(self::returnSelf());
+            )->willReturnSelf();
 
         $response = $this->createMock(ResponseInterface::class);
 
