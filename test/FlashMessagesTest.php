@@ -194,6 +194,10 @@ class FlashMessagesTest extends TestCase
             ],
         ];
 
+        $invocationCounter = new class {
+            public int $count = 0;
+        };
+
         $this->session
             ->expects(self::once())
             ->method('has')
@@ -207,7 +211,15 @@ class FlashMessagesTest extends TestCase
 
                 return true;
             }))
-            ->willReturnOnConsecutiveCalls($messages, []);
+            ->willReturnCallback(static function () use ($messages, $invocationCounter) {
+                $invocationCounter->count += 1;
+
+                if ($invocationCounter->count === 1) {
+                    return $messages;
+                }
+
+                return [];
+            });
         $this->session
             ->expects(self::once())
             ->method('unset')
@@ -262,6 +274,10 @@ class FlashMessagesTest extends TestCase
         $messagesExpected['test']['hops']   = 2;
         $messagesExpected['test-2']['hops'] = 1;
 
+        $invocationCounter = new class {
+            public int $count = 0;
+        };
+
         $this->session
             ->expects(self::once())
             ->method('has')
@@ -274,7 +290,15 @@ class FlashMessagesTest extends TestCase
                 self::identicalTo(FlashMessagesInterface::FLASH_NEXT),
                 self::callback(fn ($arg): bool => in_array($arg, [null, []], true)),
             )
-            ->willReturnOnConsecutiveCalls($messages, $messagesExpected);
+            ->willReturnCallback(static function () use ($messagesExpected, $messages, $invocationCounter) {
+                $invocationCounter->count += 1;
+
+                if ($invocationCounter->count === 1) {
+                    return $messages;
+                }
+
+                return $messagesExpected;
+            });
         $this->session
             ->expects(self::once())
             ->method('set')
