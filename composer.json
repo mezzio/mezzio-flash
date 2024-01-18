@@ -36,7 +36,7 @@
     },
     "require": {
         "php": "~8.1.0 || ~8.2.0 || ~8.3.0",
-        "mezzio/mezzio-session": "^1.0",
+        "mezzio/mezzio-session": "^1.7",
         "psr/http-server-middleware": "^1.0"
     },
     "require-dev": {
