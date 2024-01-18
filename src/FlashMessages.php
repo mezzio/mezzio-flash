@@ -6,6 +6,9 @@ namespace Mezzio\Flash;
 
 use Mezzio\Session\SessionInterface;
 
+use function array_map;
+use function array_values;
+
 /**
  * Create, retrieve, and manipulate flash messages.
  *
@@ -25,21 +28,20 @@ use Mezzio\Session\SessionInterface;
  * In order to keep messages made available to the current request for another
  * hop, use the `prolongFlash()` method.
  *
- * @psalm-type StoredMessages = array<string,array{value:mixed,hops:int}>
+ * @psalm-type StoredMessages = array<non-empty-string, list<array{value:non-empty-string,hops:int}>>
  */
-class FlashMessages implements FlashMessagesInterface
+final class FlashMessages implements FlashMessagesInterface
 {
-    /** @var array<string,mixed> */
+    /** @var StoredMessages */
     private array $currentMessages = [];
 
+    /** @param non-empty-string $sessionKey */
     private function __construct(private SessionInterface $session, private string $sessionKey)
     {
         $this->prepareMessages($session, $sessionKey);
     }
 
-    /**
-     * Create an instance from a session container.
-     */
+    /** @inheritDoc */
     public static function createFromSession(
         SessionInterface $session,
         string $sessionKey = FlashMessagesInterface::FLASH_NEXT
@@ -48,76 +50,45 @@ class FlashMessages implements FlashMessagesInterface
     }
 
     /**
-     * Set a flash value with the given key.
-     *
-     * Flash values are accessible on the next "hop", where a hop is the
-     * next time the session is accessed; you may pass an additional $hops
-     * integer to allow access for more than one hop.
-     *
-     * @param mixed $value
+     * @inheritDoc
      * @throws Exception\InvalidHopsValueException
      */
-    public function flash(string $key, $value, int $hops = 1): void
+    public function flash(string $key, string $value, int $hops = 1): void
     {
+        /** @psalm-suppress DocblockTypeContradiction, NoValue. Annotated as positive int, but defensive condition remains */
         if ($hops < 1) {
             throw Exception\InvalidHopsValueException::valueTooLow($key, $hops);
         }
 
-        $messages       = $this->getStoredMessages();
-        $messages[$key] = [
+        $messages         = $this->getStoredMessages();
+        $messages[$key][] = [
             'value' => $value,
             'hops'  => $hops,
         ];
         $this->session->set($this->sessionKey, $messages);
     }
 
-    /**
-     * Set a flash value with the given key, but allow access during this request.
-     *
-     * Flash values are generally accessible only on subsequent requests;
-     * using this method, you may make the value available during the current
-     * request as well.
-     *
-     * If you want the value to be visible only in the current request, you may
-     * pass zero as the third argument.
-     *
-     * @param mixed $value
-     */
-    public function flashNow(string $key, $value, int $hops = 1): void
+    /** @inheritDoc */
+    public function flashNow(string $key, string $value, int $hops = 1): void
     {
-        $this->currentMessages[$key] = $value;
+        $this->currentMessages[$key][] = ['hops' => 0, 'value' => $value];
         if ($hops > 0) {
             $this->flash($key, $value, $hops);
         }
     }
 
-    /**
-     * Retrieve a flash value.
-     *
-     * Will return a value only if a flash value was set in a previous request,
-     * or if `flashNow()` was called in this request with the same `$key`.
-     *
-     * WILL NOT return a value if set in the current request via `flash()`.
-     *
-     * @param mixed $default Default value to return if no flash value exists.
-     * @return mixed
-     */
-    public function getFlash(string $key, $default = null)
+    /** @inheritDoc */
+    public function getFlash(string $key, array $default = []): array
     {
-        return $this->currentMessages[$key] ?? $default;
+        return $this->getFlashes()[$key] ?? $default;
     }
 
-    /**
-     * Retrieve all flash values.
-     *
-     * Will return all values was set in a previous request, or if `flashNow()`
-     * was called in this request.
-     *
-     * WILL NOT return values set in the current request via `flash()`.
-     */
+    /** @return array<string, list<non-empty-string>> */
     public function getFlashes(): array
     {
-        return $this->currentMessages;
+        return array_map(static function (array $list) {
+            return array_map(fn (array $data): string => $data['value'], $list);
+        }, $this->currentMessages);
     }
 
     /**
@@ -135,51 +106,52 @@ class FlashMessages implements FlashMessagesInterface
      */
     public function prolongFlash(): void
     {
-        $messages = $this->getStoredMessages();
+        foreach ($this->currentMessages as $key => $list) {
+            foreach ($list as $index => $data) {
+                if ($data['hops'] > 0) {
+                    // We only want to prolong _current_ messages
+                    continue;
+                }
 
-        /** @var mixed $value */
-        foreach ($this->currentMessages as $key => $value) {
-            if (isset($messages[$key])) {
-                continue;
+                /** @psalm-suppress PropertyTypeCoercion This is still a list */
+                $this->currentMessages[$key][$index]['hops']++;
             }
-
-            $this->flash($key, $value);
         }
+
+        $this->session->set($this->sessionKey, $this->currentMessages);
     }
 
-    public function prepareMessages(SessionInterface $session, string $sessionKey): void
+    /** @param non-empty-string $sessionKey */
+    private function prepareMessages(SessionInterface $session, string $sessionKey): void
     {
         if (! $session->has($sessionKey)) {
             return;
         }
 
         $sessionMessages = $this->getStoredMessages($sessionKey);
+        foreach ($sessionMessages as $key => $list) {
+            foreach ($list as $index => $data) {
+                if ($data['hops'] === 0) {
+                    unset($sessionMessages[$key][$index]);
+                    continue;
+                }
 
-        /** @var array<string,mixed> $currentMessages */
-        $currentMessages = [];
-        foreach ($sessionMessages as $key => $data) {
-            /**
-             * The public API of flash() and flashNow() explicitly allow calling
-             * code to pass `$value`s of any type, making this unavoidable.
-             *
-             * @psalm-suppress MixedAssignment
-             */
-            $currentMessages[$key] = $data['value'];
-
-            if ($data['hops'] === 1) {
-                unset($sessionMessages[$key]);
-                continue;
+                $sessionMessages[$key][$index]['hops']--;
             }
 
-            $data['hops']         -= 1;
-            $sessionMessages[$key] = $data;
+            $sessionMessages[$key] = array_values($sessionMessages[$key]);
+
+            if ($sessionMessages[$key] === []) {
+                unset($sessionMessages[$key]);
+            }
         }
 
         empty($sessionMessages)
             ? $session->unset($sessionKey)
             : $session->set($sessionKey, $sessionMessages);
 
-        $this->currentMessages = $currentMessages;
+        /** @psalm-suppress PropertyTypeCoercion $sessionMessages only contains lists */
+        $this->currentMessages = $sessionMessages;
     }
 
     /**

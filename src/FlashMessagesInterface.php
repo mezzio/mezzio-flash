@@ -18,6 +18,8 @@ interface FlashMessagesInterface
      *
      * Flash messages will be retrieved from and persisted to the session via
      * the `$sessionKey`.
+     *
+     * @param non-empty-string $sessionKey
      */
     public static function createFromSession(
         SessionInterface $session,
@@ -31,9 +33,11 @@ interface FlashMessagesInterface
      * next time the session is accessed; you may pass an additional $hops
      * integer to allow access for more than one hop.
      *
-     * @param mixed $value
+     * @param non-empty-string $key
+     * @param non-empty-string $value
+     * @param positive-int $hops
      */
-    public function flash(string $key, $value, int $hops = 1): void;
+    public function flash(string $key, string $value, int $hops = 1): void;
 
     /**
      * Set a flash value with the given key, but allow access during this request.
@@ -42,9 +46,11 @@ interface FlashMessagesInterface
      * using this method, you may make the value available during the current
      * request as well.
      *
-     * @param mixed $value
+     * @param non-empty-string $key
+     * @param non-empty-string $value
+     * @param non-negative-int $hops
      */
-    public function flashNow(string $key, $value, int $hops = 1): void;
+    public function flashNow(string $key, string $value, int $hops = 1): void;
 
     /**
      * Retrieve a flash value.
@@ -54,10 +60,11 @@ interface FlashMessagesInterface
      *
      * WILL NOT return a value if set in the current request via `flash()`.
      *
-     * @param mixed $default Default value to return if no flash value exists.
-     * @return mixed
+     * @param non-empty-string $key
+     * @param list<non-empty-string> $default Default value to return if no flash value exists.
+     * @return list<non-empty-string>
      */
-    public function getFlash(string $key, $default = null);
+    public function getFlash(string $key, array $default = []): array;
 
     /**
      * Retrieve all flash values.
@@ -67,7 +74,7 @@ interface FlashMessagesInterface
      *
      * WILL NOT return values set in the current request via `flash()`.
      *
-     * @return array
+     * @return array<string, list<non-empty-string>>
      */
     public function getFlashes(): array;
 
