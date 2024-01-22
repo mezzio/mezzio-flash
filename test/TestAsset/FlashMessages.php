@@ -22,26 +22,20 @@ class FlashMessages implements FlashMessagesInterface
         return new self($session, $sessionKey);
     }
 
-    /**
-     * @param mixed $value
-     */
-    public function flash(string $key, $value, int $hops = 1): void
+    /** @inheritDoc */
+    public function flash(string $key, string $value, int $hops = 1): void
     {
     }
 
-    /**
-     * @param mixed $value
-     */
-    public function flashNow(string $key, $value, int $hops = 1): void
+    /** @inheritDoc */
+    public function flashNow(string $key, string $value, int $hops = 1): void
     {
     }
 
-    /**
-     * @param mixed|null $default
-     * @return void
-     */
-    public function getFlash(string $key, $default = null)
+    /** @inheritDoc */
+    public function getFlash(string $key, array $default = []): array
     {
+        return [];
     }
 
     public function getFlashes(): array

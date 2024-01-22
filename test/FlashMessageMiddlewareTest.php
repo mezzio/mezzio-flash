@@ -4,15 +4,14 @@ declare(strict_types=1);
 
 namespace MezzioTest\Flash;
 
+use Laminas\Diactoros\ServerRequest;
 use Mezzio\Flash\Exception;
 use Mezzio\Flash\FlashMessageMiddleware;
-use Mezzio\Flash\FlashMessagesInterface;
-use Mezzio\Session\SessionInterface;
+use Mezzio\Session\Session;
 use Mezzio\Session\SessionMiddleware;
+use MezzioTest\Flash\TestAsset\FlashMessages;
+use MezzioTest\Flash\TestAsset\TestHandler;
 use PHPUnit\Framework\TestCase;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\RequestHandlerInterface;
 use stdClass;
 
 class FlashMessageMiddlewareTest extends TestCase
@@ -33,76 +32,34 @@ class FlashMessageMiddlewareTest extends TestCase
 
     public function testProcessRaisesExceptionIfRequestSessionAttributeDoesNotReturnSessionInterface(): void
     {
-        $request = $this->createMock(ServerRequestInterface::class);
-        $request
-            ->expects(self::once())
-            ->method('getAttribute')
-            ->with(SessionMiddleware::SESSION_ATTRIBUTE, false)
-            ->willReturn(false);
-        $request
-            ->expects(self::never())
-            ->method('withAttribute')
-            ->with(
-                FlashMessageMiddleware::FLASH_ATTRIBUTE,
-                self::isInstanceOf(FlashMessagesInterface::class)
-            );
-
-        $handler = $this->createMock(RequestHandlerInterface::class);
-        $handler
-            ->expects(self::never())
-            ->method('handle')
-            ->with(self::isInstanceOf(ServerRequestInterface::class));
-
         $middleware = new FlashMessageMiddleware();
 
         $this->expectException(Exception\MissingSessionException::class);
         $this->expectExceptionMessage(FlashMessageMiddleware::class);
 
-        $middleware->process($request, $handler);
+        $middleware->process(new ServerRequest(), new TestHandler());
     }
 
-    // @codingStandardsIgnoreStart
-    public function testProcessUsesConfiguredClassAndSessionKeyAndAttributeKeyToCreateFlashMessagesAndPassToHandler(): void
+    public function testProcessUsesConfiguredClassAndSessionKeyAndAttributeKeyToCreateFlashMessagesAndPassToHandler(): void // phpcs:ignore
     {
-        // @codingStandardsIgnoreEnd
-        $session = $this->createMock(SessionInterface::class);
-
-        $request = $this->createMock(ServerRequestInterface::class);
-        $request
-            ->expects(self::once())
-            ->method('getAttribute')
-            ->with(SessionMiddleware::SESSION_ATTRIBUTE, false)
-            ->willReturn($session);
-        $request
-            ->expects(self::once())
-            ->method('withAttribute')
-            ->with(
-                'non-standard-flash-attr',
-                self::callback(function (TestAsset\FlashMessages $flash) use ($session): bool {
-                    self::assertSame($session, $flash->session);
-                    self::assertSame('non-standard-flash-next', $flash->sessionKey);
-                    return true;
-                })
-            )->willReturnSelf();
-
-        $response = $this->createMock(ResponseInterface::class);
-
-        $handler = $this->createMock(RequestHandlerInterface::class);
-        $handler
-            ->expects(self::once())
-            ->method('handle')
-            ->with($request)
-            ->willReturn($response);
+        $session = new Session([]);
+        $request = (new ServerRequest())->withAttribute(SessionMiddleware::SESSION_ATTRIBUTE, $session);
+        $handler = new TestHandler();
 
         $middleware = new FlashMessageMiddleware(
-            TestAsset\FlashMessages::class,
+            FlashMessages::class,
             'non-standard-flash-next',
             'non-standard-flash-attr'
         );
 
-        self::assertSame(
-            $response,
-            $middleware->process($request, $handler)
-        );
+        $response = $middleware->process($request, $handler);
+
+        self::assertTrue($handler->requestWasReceived());
+        self::assertSame($handler->response, $response);
+        self::assertNotSame($request, $handler->receivedRequest());
+        $flash = $handler->receivedRequest()->getAttribute('non-standard-flash-attr');
+        self::assertInstanceOf(FlashMessages::class, $flash);
+        self::assertSame('non-standard-flash-next', $flash->sessionKey);
+        self::assertSame($session, $flash->session);
     }
 }
