@@ -32,7 +32,7 @@ class FlashMessages implements FlashMessagesInterface
     /** @var array<string,mixed> */
     private array $currentMessages = [];
 
-    private function __construct(private SessionInterface $session, private string $sessionKey)
+    private function __construct(private readonly SessionInterface $session, private readonly string $sessionKey)
     {
         $this->prepareMessages($session, $sessionKey);
     }

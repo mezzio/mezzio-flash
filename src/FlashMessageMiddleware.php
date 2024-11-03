@@ -22,8 +22,8 @@ class FlashMessageMiddleware implements MiddlewareInterface
 
     public function __construct(
         string $flashMessagesClass = FlashMessages::class,
-        private string $sessionKey = FlashMessagesInterface::FLASH_NEXT,
-        private string $attributeKey = self::FLASH_ATTRIBUTE
+        private readonly string $sessionKey = FlashMessagesInterface::FLASH_NEXT,
+        private readonly string $attributeKey = self::FLASH_ATTRIBUTE
     ) {
         $factory = [$flashMessagesClass, 'createFromSession'];
         if (! is_callable($factory)) {
