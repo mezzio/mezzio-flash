@@ -13,6 +13,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 use function is_callable;
 
+/** @final */
 class FlashMessageMiddleware implements MiddlewareInterface
 {
     public const FLASH_ATTRIBUTE = 'flash';

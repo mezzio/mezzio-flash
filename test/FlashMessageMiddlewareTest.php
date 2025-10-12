@@ -15,7 +15,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use stdClass;
 
-class FlashMessageMiddlewareTest extends TestCase
+final class FlashMessageMiddlewareTest extends TestCase
 {
     public function testConstructorRaisesExceptionIfFlashMessagesClassIsNotAClass(): void
     {

@@ -10,6 +10,7 @@ use Mezzio\Flash\FlashMessagesInterface;
 
 use function sprintf;
 
+/** @final */
 class InvalidFlashMessagesImplementationException extends InvalidArgumentException implements ExceptionInterface
 {
     public static function forClass(string $class): self

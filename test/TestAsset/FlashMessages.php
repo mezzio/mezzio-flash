@@ -7,7 +7,7 @@ namespace MezzioTest\Flash\TestAsset;
 use Mezzio\Flash\FlashMessagesInterface;
 use Mezzio\Session\SessionInterface;
 
-class FlashMessages implements FlashMessagesInterface
+final class FlashMessages implements FlashMessagesInterface
 {
     public function __construct(
         public readonly SessionInterface $session,
