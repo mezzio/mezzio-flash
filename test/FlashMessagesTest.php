@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
 
 use function in_array;
 
-class FlashMessagesTest extends TestCase
+final class FlashMessagesTest extends TestCase
 {
     private SessionInterface&MockObject $session;
 

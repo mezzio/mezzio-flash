@@ -9,6 +9,7 @@ use RuntimeException;
 
 use function sprintf;
 
+/** @final */
 class MissingSessionException extends RuntimeException implements ExceptionInterface
 {
     public static function forMiddleware(MiddlewareInterface $middleware): MissingSessionException
