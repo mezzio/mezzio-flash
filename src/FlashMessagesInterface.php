@@ -66,8 +66,6 @@ interface FlashMessagesInterface
      * was called in this request.
      *
      * WILL NOT return values set in the current request via `flash()`.
-     *
-     * @return array
      */
     public function getFlashes(): array;
 

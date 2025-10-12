@@ -26,7 +26,6 @@ use Mezzio\Session\SessionInterface;
  * hop, use the `prolongFlash()` method.
  *
  * @psalm-type StoredMessages = array<string,array{value:mixed,hops:int}>
- *
  * @final
  */
 class FlashMessages implements FlashMessagesInterface
