@@ -245,7 +245,7 @@ final class FlashMessagesTest extends TestCase
             ->method('set')
             ->with(
                 self::identicalTo(FlashMessagesInterface::FLASH_NEXT),
-                self::callback(fn ($arg): bool => in_array($arg, $expectInSet, true)),
+                self::callback(static fn ($arg): bool => in_array($arg, $expectInSet, true)),
             );
 
         $flash = FlashMessages::createFromSession($this->session);
@@ -288,7 +288,7 @@ final class FlashMessagesTest extends TestCase
             ->method('get')
             ->with(
                 self::identicalTo(FlashMessagesInterface::FLASH_NEXT),
-                self::callback(fn ($arg): bool => in_array($arg, [null, []], true)),
+                self::callback(static fn ($arg): bool => in_array($arg, [null, []], true)),
             )
             ->willReturnCallback(static function () use ($messagesExpected, $messages, $invocationCounter) {
                 $invocationCounter->count += 1;
