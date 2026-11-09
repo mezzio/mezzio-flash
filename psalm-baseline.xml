@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<files psalm-version="6.20.10@7fc81490f861c801061836a9010603d2393bf8da">
+  <file src="src/FlashMessagesInterface.php">
+    <MissingClassConstType>
+      <code><![CDATA[FLASH_NEXT = self::class . '::FLASH_NEXT']]></code>
+    </MissingClassConstType>
+  </file>
+</files>

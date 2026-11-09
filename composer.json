@@ -23,7 +23,7 @@
     "config": {
         "sort-packages": true,
         "platform": {
-            "php": "8.2.99"
+            "php": "8.3.99"
         },
         "allow-plugins": {
             "dealerdirect/phpcodesniffer-composer-installer": true
@@ -35,16 +35,17 @@
         }
     },
     "require": {
-        "php": "~8.2.0 || ~8.3.0 || ~8.4.0 || ~8.5.0",
+        "php": "~8.3.0 || ~8.4.0 || ~8.5.0 || ~8.6.0",
         "mezzio/mezzio-session": "^1.0",
         "psr/http-server-middleware": "^1.0"
     },
     "require-dev": {
-        "boundwize/structarmed": "^0.18.10",
+        "boundwize/structarmed": "^0.18.11",
+        "laminas/internal-tooling": "^1.0.0",
         "laminas/laminas-coding-standard": "~3.1.0",
-        "phpunit/phpunit": "^11.5.42",
-        "psalm/plugin-phpunit": "^0.19.5",
-        "vimeo/psalm": "^6.13.1"
+        "phpunit/phpunit": "^11.5.57",
+        "psalm/plugin-phpunit": "^0.19.7",
+        "vimeo/psalm": "^6.20.10"
     },
     "autoload": {
         "psr-4": {
