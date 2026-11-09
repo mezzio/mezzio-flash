@@ -1,12 +1,14 @@
 <?xml version="1.0"?>
 <psalm
-        errorLevel="1"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xmlns="https://getpsalm.org/schema/config"
-        xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
-        findUnusedBaselineEntry="true"
-        findUnusedPsalmSuppress="true"
-        findUnusedCode="true"
+    errorLevel="1"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="https://getpsalm.org/schema/config"
+    xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
+    findUnusedBaselineEntry="true"
+    findUnusedPsalmSuppress="true"
+    findUnusedCode="true"
+    ensureOverrideAttribute="false"
+    errorBaseline="psalm-baseline.xml"
 >
     <projectFiles>
         <directory name="src"/>
@@ -17,12 +19,6 @@
     </projectFiles>
 
     <issueHandlers>
-        <MissingOverrideAttribute>
-            <errorLevel type="suppress">
-                <directory name="src" />
-                <directory name="test" />
-            </errorLevel>
-        </MissingOverrideAttribute>
     </issueHandlers>
 
     <plugins>
